@@ -1,7 +1,4 @@
-function reportMembersToProcess() {
-  const conn = Jdbc.getConnection(url, username, password);
-  const stmt = conn.createStatement();
-
+function reportMembersToProcess(stmt) {
   makeReport(stmt, {
     sheetName: "To Process",
     query: `                                                                                                                                                                                                                      
@@ -38,7 +35,4 @@ function reportMembersToProcess() {
       { type: 'wrap', column: "Postcode" },
     ]
   });
-
-  stmt.close();
-  conn.close();
 }

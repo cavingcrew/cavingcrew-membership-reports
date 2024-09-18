@@ -1,7 +1,4 @@
-function reportCancellation() {
-    const conn = Jdbc.getConnection(url, username, password);
-    const stmt = conn.createStatement();
-
+function reportCancellation(stmt) {
     makeReport(stmt, {
         sheetName: "Cancelled Members",
         query: `                                                                                                                                                                                                                      
@@ -38,7 +35,4 @@ function reportCancellation() {
             { type: 'color', column: "Crew Member?", search: "expired", color: colors.lightYellow },
         ]
     });
-
-    stmt.close();
-    conn.close();
 }

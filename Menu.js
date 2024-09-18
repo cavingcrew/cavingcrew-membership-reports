@@ -11,12 +11,61 @@ function onOpen() {
       .addToUi();   
 
   ui.createMenu('Refresh Matrix')
-      .addItem('Refresh All', 'reportMemberMatrix')
+      .addItem('Refresh All', 'readData')
       .addSeparator()
-      .addItem('Refresh BCA-CIM-Proforma', 'reportBCACIMProforma')
-      .addItem('Refresh Members To Process', 'reportMembersToProcess')
-      .addItem('Refresh Processed Members', 'reportMembersProcessed')
+      .addItem('Refresh BCA-CIM-Proforma', 'refreshBCACIMProforma')
+      .addItem('Refresh Members To Process', 'refreshMembersToProcess')
+      .addItem('Refresh Processed Members', 'refreshMembersProcessed')
       .addSeparator()
-      .addItem('Refresh Cancellation', 'reportCancellation')
+      .addItem('Refresh Cancellation', 'refreshCancellation')
       .addToUi();   
+}
+
+function readData() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+
+  const reports = [
+    reportBCACIMProforma,
+    reportMembersToProcess,
+    reportMembersProcessed,
+    reportCancellation,
+  ];
+
+  reports.forEach(report => report(stmt));
+
+  stmt.close();
+  conn.close();
+}
+
+function refreshBCACIMProforma() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+  reportBCACIMProforma(stmt);
+  stmt.close();
+  conn.close();
+}
+
+function refreshMembersToProcess() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+  reportMembersToProcess(stmt);
+  stmt.close();
+  conn.close();
+}
+
+function refreshMembersProcessed() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+  reportMembersProcessed(stmt);
+  stmt.close();
+  conn.close();
+}
+
+function refreshCancellation() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+  reportCancellation(stmt);
+  stmt.close();
+  conn.close();
 }

@@ -1,13 +1,4 @@
-function reportMemberMatrix() {
-  reportBCACIMProforma();
-  reportMembersToProcess();
-  reportMembersProcessed();
-}
-
-function reportBCACIMProforma() {
-  const conn = Jdbc.getConnection(url, username, password);
-  const stmt = conn.createStatement();
-
+function reportBCACIMProforma(stmt) {
   makeReport(stmt, {
     sheetName: "BCA-CIM-Proforma",
     query: `                                                                                                                                                                                                                      
@@ -42,7 +33,4 @@ function reportBCACIMProforma() {
       { type: 'wrap', column: "Postcode" },
     ]
   });
-
-  stmt.close();
-  conn.close();
 }

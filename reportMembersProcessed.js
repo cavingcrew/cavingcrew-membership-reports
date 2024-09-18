@@ -1,7 +1,4 @@
-function reportMembersProcessed() {
-  const conn = Jdbc.getConnection(url, username, password);
-  const stmt = conn.createStatement();
-
+function reportMembersProcessed(stmt) {
   makeReport(stmt, {
     sheetName: "Processed",
     query: `                                                                                                                                                                                                                      
@@ -18,7 +15,4 @@ function reportMembersProcessed() {
       ORDER BY first_name ASC                                                                                                                                                                                                     
     `
   });
-
-  stmt.close();
-  conn.close();
 }
