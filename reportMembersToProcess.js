@@ -1,15 +1,9 @@
-function reportMemberMatrix() {
-  reportBCACIMProforma();
-  reportMembersToProcess();
-  reportMembersProcessed();
-}
-
-function reportBCACIMProforma() {
+function reportMembersToProcess() {
   const conn = Jdbc.getConnection(url, username, password);
   const stmt = conn.createStatement();
 
   makeReport(stmt, {
-    sheetName: "BCA-CIM-Proforma",
+    sheetName: "To Process",
     query: `                                                                                                                                                                                                                      
       SELECT DISTINCT                                                                                                                                                                                                             
         first_name AS "Forenames",                                                                                                                                                                                                
@@ -30,9 +24,11 @@ function reportBCACIMProforma() {
         "" AS "County",                                                                                                                                                                                                           
         billing_postcode AS "Postcode",                                                                                                                                                                                           
         "UK",                                                                                                                                                                                                                     
-        id                                                                                                                                                                                                                        
+        id,                                                                                                                                                                                                                       
+        (SELECT CONCAT("https://www.cavingcrew.com/wp-admin/post.php?post=",pd.order_id,"&action=edit")) AS "Order Edit"                                                                                                          
       FROM jtl_member_db                                                                                                                                                                                                          
-      WHERE cc_member="yes"                                                                                                                                                                                                       
+      LEFT JOIN jtl_order_product_customer_lookup pd ON pd.user_id = jtl_member_db.id                                                                                                                                             
+      WHERE cc_member="yes" AND admin-bca-number IS NULL                                                                                                                                                                          
       ORDER BY STR_TO_DATE(membership_joining_date, "%d/%m/%Y") ASC, admin-bca-number ASC, first_name ASC                                                                                                                         
     `,
     formatting: [
