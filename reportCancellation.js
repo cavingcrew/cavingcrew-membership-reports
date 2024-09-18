@@ -24,7 +24,7 @@ function reportCancellation(stmt) {
          id                                                                                                                                                                                                                        
        FROM jtl_member_db                                                                                                                                                                                                          
        WHERE (cc_member="no" OR cc_member="expired")                                                                                                                                                                               
-       ORDER BY membership_cancellation_date ASC                                                                                                                                                                                   
+       ORDER BY STR_TO_DATE(membership_cancellation_date, '%d/%m/%Y') DESC                                                                                                                                                                                  
      `,
         formatting: [
             { type: 'wrap', column: "Address 1" },

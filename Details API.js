@@ -1,8 +1,3 @@
-var apidomain="cavingcrew.com"
-var apiusername="ck_91675da0323ed5e5f5704a79a59288950db68efc"
-var apipassword="cs_7be15b56e20ef6006720147f4ce44ff472039328"
-
-
 function unMembership(){
 var meta_key = "cc_member"
 var meta_value = "no"
@@ -47,23 +42,6 @@ function setMembershipNumber(){
   }
 }
 
-function giveFloorwalker(){
-var meta_key = "competency_indoor_floorwalker"
-var meta_value = "Signed Off"
-giveCompetency(meta_key, meta_value)
-}
-
-function giveAnnouncements(){
-var meta_key = "competency_indoor_announcements"
-var meta_value = "Signed Off"
-giveCompetency(meta_key, meta_value)
-}
-
-function giveCheckIn(){
-var meta_key = "competency_checkin"
-var meta_value = "Signed Off"
-giveCompetency(meta_key, meta_value)
-}
 
 
 function giveCompetency(meta_key,meta_value){
@@ -84,13 +62,13 @@ function giveCompetency(meta_key,meta_value){
   var first_name = sheet.getRange(currentRow, 1,1,1).getValue();  /// get submission ID 1 BV ( was 67)
 
   //console.log(user_id);
-  
-if(user_id === "" || user_id ===  "user_id"){Browser.msgBox('No User ID Found', Browser.Buttons.OK); return;} 
+
+if(user_id === "" || user_id ===  "user_id"){Browser.msgBox('No User ID Found', Browser.Buttons.OK); return;}
 
 
 
 
- if (Browser.msgBox("Given a competency to " +first_name + "? \n User " + user_id, Browser.Buttons.OK_CANCEL) == "ok") { 
+ if (Browser.msgBox("Given a competency to " +first_name + "? \n User " + user_id, Browser.Buttons.OK_CANCEL) == "ok") {
 
 
 
@@ -98,7 +76,7 @@ let cc_attendance_setter =  Session.getActiveUser().getEmail();
 
 //let metakey = "milestones_3_badge"
 //let metavalue = "given"
-let datetime = Date.now(); 
+let datetime = Date.now();
 //Logger.log(datetime);
 
 let meta_key_given_at = meta_key + "_marked_given_at"
@@ -107,12 +85,12 @@ let meta_key_given_by = meta_key + "_marked_given_by"
 
 var data = {"meta_data": [
     {"key": meta_key,
-    "value": meta_value}, 
+    "value": meta_value},
     {"key": meta_key_given_at,
-    "value": datetime}, 
+    "value": datetime},
     {"key": meta_key_given_by,
     "value": cc_attendance_setter }
-  ], 
+  ],
 };
 
 let returndata =  pokeToWooUserMeta(data, user_id); //returns JSON object
@@ -129,14 +107,14 @@ returndata= JSON.parse(returndata)
 
 let search = returndata.meta_data.find(({key}) => key == meta_key)?.value;
 
-//Logger.log(search); 
- 
+//Logger.log(search);
+
 if (search === meta_value){
   sheet.getRange(currentRow, 2,1,1).setValue("Given");   // paste the blank variables into the cells to delete contents
  sheet.getRange(currentRow, 15,1,1).setValue(meta_key);
  sheet.getRange(currentRow, 16,1,1).setValue(meta_value);   // paste the blank variables into the cells to delete contents
 
-return meta_value  
+return meta_value
 }
 else {
     Logger.log("ERROR" + search);
