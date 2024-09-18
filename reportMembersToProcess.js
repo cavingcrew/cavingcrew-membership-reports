@@ -25,17 +25,12 @@ function reportMembersToProcess(stmt) {
         (SELECT CONCAT("https://www.cavingcrew.com/wp-admin/post.php?post=",pd.order_id,"&action=edit")) AS "Order Edit"                                                                                                          
       FROM jtl_member_db                                                                                                                                                                                                          
       LEFT JOIN jtl_order_product_customer_lookup pd ON pd.user_id = jtl_member_db.id                                                                                                                                             
-      WHERE cc_member="yes" AND \`admin-bca-number\` IS NULL                                                                                                                                                                          
+      WHERE (cc_member="yes" AND (\`admin-bca-number\` IS NULL OR       \`admin-bca-number\` == "" )) OR     (membership_joining_date IS NOT NULL AND (\`admin-bca-number\` IS NULL OR       \`admin-bca-number\` == "" ))                                                                                                                                                                 
       ORDER BY STR_TO_DATE(membership_joining_date, "%d/%m/%Y") ASC, \`admin-bca-number\` ASC, first_name ASC                                                                                                                         
     `,
     formatting: [
       { type: 'wrap', column: "Address 1" },
-      { type: 'wrap', column: "Address 2" },
-      { type: 'wrap', column: "Address 3" },
-      { type: 'wrap', column: "Town" },
-      { type: 'wrap', column: "County" },
-      { type: 'wrap', column: "Postcode" },
-      { type: 'wrap', column: "Country" },
+      { type: 'wrap', column: "Address 2" }
     ]
   });
 }
