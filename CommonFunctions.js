@@ -145,10 +145,9 @@ function getIP() {
 }
 
 function makeReport(stmt, reportConfig) {
-    const cell = setupCell("Dashboard", "B49");
     const sheet = setupSheet(reportConfig.sheetName);
 
-    const results = stmt.executeQuery(reportConfig.query.replace('${cell}', cell));
+    const results = stmt.executeQuery(reportConfig.query);
 
     appendToSheet(sheet, results);
 
