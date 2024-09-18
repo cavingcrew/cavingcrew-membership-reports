@@ -16,11 +16,11 @@ function reportMembersToProcess(stmt) {
         \`admin-personal-year-of-birth\` AS "Year Of Birth",                                                                                                                                                                          
         billing_address_1 AS "Address 1",                                                                                                                                                                                         
         billing_address_2 AS "Address 2",                                                                                                                                                                                         
-        " ",                                                                                                                                                                                                                      
+        " " AS "Address 3",                                                                                                                                                                                                                      
         billing_city AS "Town",                                                                                                                                                                                                   
         "" AS "County",                                                                                                                                                                                                           
         billing_postcode AS "Postcode",                                                                                                                                                                                           
-        "UK",                                                                                                                                                                                                                     
+        "UK" AS "Country",                                                                                                                                                                                                                     
         id,                                                                                                                                                                                                                       
         (SELECT CONCAT("https://www.cavingcrew.com/wp-admin/post.php?post=",pd.order_id,"&action=edit")) AS "Order Edit"                                                                                                          
       FROM jtl_member_db                                                                                                                                                                                                          
@@ -31,8 +31,11 @@ function reportMembersToProcess(stmt) {
     formatting: [
       { type: 'wrap', column: "Address 1" },
       { type: 'wrap', column: "Address 2" },
+      { type: 'wrap', column: "Address 3" },
       { type: 'wrap', column: "Town" },
+      { type: 'wrap', column: "County" },
       { type: 'wrap', column: "Postcode" },
+      { type: 'wrap', column: "Country" },
     ]
   });
 }
