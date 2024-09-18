@@ -11,7 +11,7 @@ function reportMembersProcessed(stmt) {
         pd.order_id AS "Order ID"                                                                                                                                                                                                 
       FROM jtl_member_db db                                                                                                                                                                                                       
       JOIN jtl_order_product_customer_lookup pd ON pd.user_id = db.id                                                                                                                                                             
-      WHERE product_id=548 AND status="wc-completed" AND YEAR(pd.order_created)>YEAR(CURDATE())-1 AND admin-bca-number<>""                                                                                                        
+      WHERE product_id=548 AND status="wc-completed" AND YEAR(pd.order_created)>YEAR(CURDATE())-1 AND \`admin-bca-number\`<>""                                                                                                        
       ORDER BY first_name ASC                                                                                                                                                                                                     
     `
   });
