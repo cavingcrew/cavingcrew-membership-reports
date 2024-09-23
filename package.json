@@ -1,7 +1,7 @@
 {
-  "name": "qms-audit-project",
+  "name": "cavingcrew-membership-reports",
   "version": "1.0.0",
-  "description": "A Google Apps Script to document qms layout and functionality.",
+  "description": "Member matrix and other reports.",
   "scripts": {
     "push": "clasp push --auth ~/.clasprc.timmydobson.json",
     "pull": "clasp pull --auth ~/.clasprc.timmydobson.json",
