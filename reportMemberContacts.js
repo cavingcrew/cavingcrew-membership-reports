@@ -5,6 +5,7 @@ function reportMemberContacts(stmt) {
       SELECT 
         first_name AS "First Name",
         last_name AS "Last Name",
+        nickname AS "Facebook Name",
         cc_member AS "Is Member",
         \`admin-phone-number\` AS "Phone Number",
         user_email AS "Email"
