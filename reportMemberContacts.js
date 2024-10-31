@@ -11,7 +11,7 @@ function reportMemberContacts(stmt) {
       FROM jtl_member_db
       WHERE \`admin-phone-number\` IS NOT NULL 
         AND \`admin-phone-number\` != ''
-      ORDER BY last_name ASC, first_name ASC
+      ORDER BY first_name ASC, last_name ASC
     `,
 		formatting: [
 			{ type: "width", column: "First Name", width: 150 },
