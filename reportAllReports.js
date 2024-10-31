@@ -1,17 +1,17 @@
 function readData() {
-  var conn = Jdbc.getConnection(url, username, password);
-  var stmt = conn.createStatement();
+	var conn = Jdbc.getConnection(url, username, password);
+	var stmt = conn.createStatement();
 
-  const reports = [
-    reportBCACIMProforma,
-    reportMembersToProcess,
-    reportMembersProcessed,
-    reportCancellation,
-    reportMemberContacts
-  ];
+	const reports = [
+		reportBCACIMProforma,
+		reportMembersToProcess,
+		reportMembersProcessed,
+		reportCancellation,
+		reportMemberContacts,
+	];
 
-  reports.forEach(report => report(stmt));
+	reports.forEach((report) => report(stmt));
 
-  stmt.close();
-  conn.close();
+	stmt.close();
+	conn.close();
 }

@@ -1,7 +1,7 @@
 function reportMemberContacts(stmt) {
-  makeReport(stmt, {
-    sheetName: "Member-Contacts",
-    query: `
+	makeReport(stmt, {
+		sheetName: "Member-Contacts",
+		query: `
       SELECT 
         first_name AS "First Name",
         last_name AS "Last Name",
@@ -11,11 +11,11 @@ function reportMemberContacts(stmt) {
       FROM jtl_member_db
       ORDER BY last_name ASC, first_name ASC
     `,
-    formatting: [
-      { type: 'width', column: "First Name", width: 150 },
-      { type: 'width', column: "Last Name", width: 150 },
-      { type: 'width', column: "Phone Number", width: 120 },
-      { type: 'width', column: "Email", width: 200 }
-    ]
-  });
+		formatting: [
+			{ type: "width", column: "First Name", width: 150 },
+			{ type: "width", column: "Last Name", width: 150 },
+			{ type: "width", column: "Phone Number", width: 120 },
+			{ type: "width", column: "Email", width: 200 },
+		],
+	});
 }
