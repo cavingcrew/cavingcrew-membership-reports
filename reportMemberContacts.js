@@ -9,6 +9,8 @@ function reportMemberContacts(stmt) {
         \`admin-phone-number\` AS "Phone Number",
         user_email AS "Email"
       FROM jtl_member_db
+      WHERE \`admin-phone-number\` IS NOT NULL 
+        AND \`admin-phone-number\` != ''
       ORDER BY last_name ASC, first_name ASC
     `,
 		formatting: [
