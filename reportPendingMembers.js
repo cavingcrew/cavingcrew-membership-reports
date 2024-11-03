@@ -1,7 +1,7 @@
 function reportPendingMembers(stmt) {
-  makeReport(stmt, {
-    sheetName: "Pending Members",
-    query: `
+	makeReport(stmt, {
+		sheetName: "Pending Members",
+		query: `
       SELECT DISTINCT
         first_name AS "Firstname*",
         last_name AS "Lastname*",
@@ -31,12 +31,12 @@ function reportPendingMembers(stmt) {
       AND (\`admin-bca-number\` IS NULL OR \`admin-bca-number\` = '')
       ORDER BY first_name ASC, last_name ASC
     `,
-    formatting: [
-      { type: 'wrap', column: "Address1" },
-      { type: 'wrap', column: "Address2" },
-      { type: 'wrap', column: "Town" },
-      { type: 'wrap', column: "PostCode" },
-      { type: 'numberFormat', column: "DOB*", format: "dd/mm/yyyy" }
-    ]
-  });
+		formatting: [
+			{ type: "wrap", column: "Address1" },
+			{ type: "wrap", column: "Address2" },
+			{ type: "wrap", column: "Town" },
+			{ type: "wrap", column: "PostCode" },
+			{ type: "numberFormat", column: "DOB*", format: "dd/mm/yyyy" },
+		],
+	});
 }
