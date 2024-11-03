@@ -20,7 +20,10 @@ function onOpen() {
 		.addItem("Refresh Cancellation", "refreshCancellation")
 		.addItem("Refresh Pending Members", "refreshPendingMembers")
 		.addItem("Refresh JustGo Members", "refreshJustGoMembers")
-		.addItem("Refresh External Pending Members", "refreshExternalPendingMembers")
+		.addItem(
+			"Refresh External Pending Members",
+			"refreshExternalPendingMembers",
+		)
 		.addToUi();
 }
 

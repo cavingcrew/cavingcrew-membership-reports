@@ -1,13 +1,15 @@
 function updateExternalPendingMembers(stmt) {
-  // Define the external spreadsheet and sheet
-  const externalSpreadsheetId = '1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk';
-  const externalSheet = SpreadsheetApp.openById(externalSpreadsheetId).getSheetByName('members');
-  
-  // Clear rows 2-10
-  externalSheet.getRange(2, 1, 9, externalSheet.getLastColumn()).clearContent();
-  
-  // Run the same query as reportPendingMembers
-  const results = stmt.executeQuery(`
+	// Define the external spreadsheet and sheet
+	const externalSpreadsheetId = "1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk";
+	const externalSheet = SpreadsheetApp.openById(
+		externalSpreadsheetId,
+	).getSheetByName("members");
+
+	// Clear rows 2-10
+	externalSheet.getRange(2, 1, 9, externalSheet.getLastColumn()).clearContent();
+
+	// Run the same query as reportPendingMembers
+	const results = stmt.executeQuery(`
     SELECT DISTINCT
       first_name AS "Firstname*",
       last_name AS "Lastname*",
@@ -38,23 +40,23 @@ function updateExternalPendingMembers(stmt) {
     ORDER BY first_name ASC, last_name ASC
   `);
 
-  // Convert results to array, skipping the header row
-  const rows = [];
-  const metaData = results.getMetaData();
-  const numCols = metaData.getColumnCount();
-  
-  while (results.next()) {
-    const row = [];
-    for (let col = 0; col < numCols; col++) {
-      row.push(results.getString(col + 1));
-    }
-    rows.push(row);
-  }
+	// Convert results to array, skipping the header row
+	const rows = [];
+	const metaData = results.getMetaData();
+	const numCols = metaData.getColumnCount();
 
-  // If we have results, write them starting at row 2
-  if (rows.length > 0) {
-    externalSheet.getRange(2, 1, rows.length, numCols).setValues(rows);
-  }
+	while (results.next()) {
+		const row = [];
+		for (let col = 0; col < numCols; col++) {
+			row.push(results.getString(col + 1));
+		}
+		rows.push(row);
+	}
 
-  results.close();
+	// If we have results, write them starting at row 2
+	if (rows.length > 0) {
+		externalSheet.getRange(2, 1, rows.length, numCols).setValues(rows);
+	}
+
+	results.close();
 }
