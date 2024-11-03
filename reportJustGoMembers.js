@@ -1,7 +1,7 @@
 function reportJustGoMembers(stmt) {
-  makeReport(stmt, {
-    sheetName: "JustGo Members",
-    query: `
+	makeReport(stmt, {
+		sheetName: "JustGo Members",
+		query: `
       SELECT DISTINCT
         \`admin-bca-number\` AS "MID",
         first_name AS "Firstname",
@@ -53,14 +53,18 @@ function reportJustGoMembers(stmt) {
       AND \`admin-bca-number\` != ''
       ORDER BY \`admin-bca-number\` ASC
     `,
-    formatting: [
-      { type: 'wrap', column: "Address Line 1" },
-      { type: 'wrap', column: "Address Line 2" },
-      { type: 'wrap', column: "Town" },
-      { type: 'wrap', column: "Postcode" },
-      { type: 'numberFormat', column: "DOB", format: "dd/mm/yyyy" },
-      { type: 'numberFormat', column: "Membership Creation Date", format: "dd/mm/yyyy" },
-      { type: 'numberFormat', column: "Expiry Date", format: "dd/mm/yyyy" }
-    ]
-  });
+		formatting: [
+			{ type: "wrap", column: "Address Line 1" },
+			{ type: "wrap", column: "Address Line 2" },
+			{ type: "wrap", column: "Town" },
+			{ type: "wrap", column: "Postcode" },
+			{ type: "numberFormat", column: "DOB", format: "dd/mm/yyyy" },
+			{
+				type: "numberFormat",
+				column: "Membership Creation Date",
+				format: "dd/mm/yyyy",
+			},
+			{ type: "numberFormat", column: "Expiry Date", format: "dd/mm/yyyy" },
+		],
+	});
 }
