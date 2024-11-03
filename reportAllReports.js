@@ -1,6 +1,6 @@
 function readData() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 
 	const reports = [
 		reportBCACIMProforma,
@@ -11,7 +11,9 @@ function readData() {
 		reportPendingMembers,
 	];
 
-	reports.forEach((report) => report(stmt));
+	for (const report of reports) {
+		report(stmt);
+	}
 
 	stmt.close();
 	conn.close();
