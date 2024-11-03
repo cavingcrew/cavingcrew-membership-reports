@@ -63,14 +63,14 @@ function setupCell(name, range) {
 	const sheet = spreadsheet.getSheetByName(name);
 	let cellValue = sheet.getRange(range).getValue();
 
-	if (isNaN(cellValue) || cellValue === "") {
+	if (Number.isNaN(cellValue) || cellValue === "") {
 		// Rerun eventListing
 		eventListing();
 
 		// Try again
 		cellValue = sheet.getRange(range).getValue();
 
-		if (isNaN(cellValue) || cellValue === "") {
+		if (Number.isNaN(cellValue) || cellValue === "") {
 			throw new Error("Invalid event selected - please try again");
 		}
 	}
@@ -151,10 +151,10 @@ function setColoursFormatLessThanOrEqualTo(
 	search,
 	colour,
 ) {
-	search = Number(search);
+	const searchNum = Number(search);
 	const range = getColumnRange(sheet, columnHeader);
 	const rule = SpreadsheetApp.newConditionalFormatRule()
-		.whenNumberLessThanOrEqualTo(search)
+		.whenNumberLessThanOrEqualTo(searchNum)
 		.setBackground(colour)
 		.setRanges([range])
 		.build();
@@ -206,7 +206,7 @@ function makeReport(stmt, reportConfig) {
 			} else if (format.type === "columnWidth") {
 				setColumnWidth(sheet, format.column, format.width);
 			}
-		});
+		}
 	}
 
 	results.close();
