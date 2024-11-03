@@ -7,7 +7,7 @@ function reportPendingMembers(stmt) {
         last_name AS "Lastname*",
         user_email AS "EmailAddress*",
         CONCAT('01/01/', \`admin-personal-year-of-birth\`) AS "DOB*",
-        user_login AS "Username*",
+        user_email AS "Username*",
         \`admin-personal-pronouns\` AS "Gender",
         '' AS "Title",
         billing_address_1 AS "Address1",
