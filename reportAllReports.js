@@ -9,6 +9,7 @@ function readData() {
 		reportCancellation,
 		reportMemberContacts,
 		reportPendingMembers,
+		reportJustGoMembers,
 	];
 
 	for (const report of reports) {

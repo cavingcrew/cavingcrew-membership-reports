@@ -19,6 +19,7 @@ function onOpen() {
 		.addSeparator()
 		.addItem("Refresh Cancellation", "refreshCancellation")
 		.addItem("Refresh Pending Members", "refreshPendingMembers")
+		.addItem("Refresh JustGo Members", "refreshJustGoMembers")
 		.addToUi();
 }
 
@@ -58,6 +59,14 @@ function refreshPendingMembers() {
 	const conn = Jdbc.getConnection(url, username, password);
 	const stmt = conn.createStatement();
 	reportPendingMembers(stmt);
+	stmt.close();
+	conn.close();
+}
+
+function refreshJustGoMembers() {
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
+	reportJustGoMembers(stmt);
 	stmt.close();
 	conn.close();
 }
