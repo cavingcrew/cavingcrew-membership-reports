@@ -1,45 +1,81 @@
-function unMembership(){
-var meta_key = "cc_member"
-var meta_value = "no"
-giveCompetency(meta_key, meta_value)
+function unMembership() {
+  giveCompetency("cc_member", "no");
 }
 
-function giveMembership(){
-  onOpen();
-var meta_key = "cc_member"
-var meta_value = "yes"
-giveCompetency(meta_key, meta_value)
+function giveMembership() {
+  giveCompetency("cc_member", "yes");
 }
 
-function giveMale(){
-var meta_key = "admin-personal-pronouns"
-var meta_value = "m"
-giveCompetency(meta_key, meta_value)
-}
+function setBCANumber() {
+  const ui = SpreadsheetApp.getUi();
+  const activeSheet = SpreadsheetApp.getActiveSheet();
+  const currentRow = activeSheet.getActiveRange().getRowIndex();
 
-function giveFemale(){
-var meta_key = "admin-personal-pronouns"
-var meta_value = "f"
-giveCompetency(meta_key, meta_value)
-}
+  if (currentRow <= 1) {
+    ui.alert('Please select a member row');
+    return;
+  }
 
-function setBirthYear(){
-  var meta_key = "admin-personal-year-of-birth";
-  var input = SpreadsheetApp.getUi().prompt('Enter the value for admin-personal-year-of-birth:', SpreadsheetApp.getUi().ButtonSet.OK_CANCEL);
-  if (input.getSelectedButton() === SpreadsheetApp.getUi().Button.OK) {
-    var value = input.getResponseText();
-    giveCompetency(meta_key, value);
+  const input = ui.prompt('Enter BCA Membership Number:', ui.ButtonSet.OK_CANCEL);
+  if (input.getSelectedButton() !== ui.Button.OK) return;
+  
+  const bcaNumber = input.getResponseText().trim();
+  if (!bcaNumber) {
+    ui.alert('Please enter a valid BCA number');
+    return;
+  }
+
+  try {
+    switch (activeSheet.getName()) {
+      case 'To Process':
+        processBCANumberFromToProcess(activeSheet, currentRow, bcaNumber);
+        break;
+      case 'BCA-CIM-Proforma':
+        processBCANumberFromProforma(activeSheet, currentRow, bcaNumber);
+        break;
+      default:
+        ui.alert('Please use this function from either the "To Process" or "BCA-CIM-Proforma" sheets');
+    }
+  } catch (error) {
+    ui.alert('Error: ' + error.message);
   }
 }
 
+function processBCANumberFromToProcess(sheet, row, bcaNumber) {
+  const idCol = findColumnIndex(sheet, 'id');
+  const orderEditCol = findColumnIndex(sheet, 'Order Edit');
+  const membershipNumberCol = findColumnIndex(sheet, 'Membership Number');
 
-function setMembershipNumber(){
-  var meta_key = "admin-bca-number";
-  var input = SpreadsheetApp.getUi().prompt('Enter the value for admin-bca-number:', SpreadsheetApp.getUi().ButtonSet.OK_CANCEL);
-  if (input.getSelectedButton() === SpreadsheetApp.getUi().Button.OK) {
-    var value = input.getResponseText();
-    giveCompetency(meta_key, value);
+  const userId = sheet.getRange(row, idCol).getValue();
+  const orderEditUrl = sheet.getRange(row, orderEditCol).getValue();
+  const orderId = extractOrderId(orderEditUrl);
+
+  if (!userId || !orderId) {
+    throw new Error('Could not find user ID or order ID');
   }
+
+  updateBCAMembershipDetails(userId, orderId, bcaNumber);
+  sheet.getRange(row, membershipNumberCol).setValue(bcaNumber);
+}
+
+function processBCANumberFromProforma(sheet, row, bcaNumber) {
+  const idCol = findColumnIndex(sheet, 'id');
+  const membershipNumberCol = findColumnIndex(sheet, 'Membership Number');
+  const userId = sheet.getRange(row, idCol).getValue();
+
+  if (!userId) {
+    throw new Error('Could not find user ID');
+  }
+
+  const toProcessRow = findUserInSheet(userId, 'To Process');
+  if (!toProcessRow) {
+    throw new Error('User not found in To Process sheet');
+  }
+
+  const toProcessSheet = SpreadsheetApp.getActive().getSheetByName('To Process');
+  processBCANumberFromToProcess(toProcessSheet, toProcessRow, bcaNumber);
+  
+  sheet.getRange(row, membershipNumberCol).setValue(bcaNumber);
 }
 
 

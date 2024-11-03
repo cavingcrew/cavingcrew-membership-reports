@@ -6,7 +6,7 @@ function onOpen() {
 		.addToUi();
 
 	ui.createMenu("Input Data")
-		.addItem("Input Membership Number", "setMembershipNumber")
+		.addItem("Input BCA Number", "setBCANumber")
 		.addItem("Input BirthYear", "setBirthYear")
 		.addToUi();
 

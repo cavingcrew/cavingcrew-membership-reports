@@ -1,5 +1,33 @@
 const scriptProperties = PropertiesService.getScriptProperties();
 
+function findColumnIndex(sheet, headerName) {
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  return headers.indexOf(headerName) + 1;
+}
+
+function getCurrentUserAndTime() {
+  return {
+    user: Session.getActiveUser().getEmail(),
+    datetime: Date.now()
+  };
+}
+
+function extractOrderId(orderEditUrl) {
+  return orderEditUrl.match(/post=(\d+)/)?.[1];
+}
+
+function findUserInSheet(userId, sheetName) {
+  const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  const idCol = findColumnIndex(sheet, 'id');
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][idCol-1] === userId) {
+      return i + 1;
+    }
+  }
+  return null;
+}
+
 const server = scriptProperties.getProperty('cred_server');
 const port = parseInt(scriptProperties.getProperty('cred_port'), 10);
 const dbName = scriptProperties.getProperty('cred_dbName');
