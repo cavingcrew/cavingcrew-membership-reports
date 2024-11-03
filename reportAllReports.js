@@ -10,6 +10,7 @@ function readData() {
 		reportMemberContacts,
 		reportPendingMembers,
 		reportJustGoMembers,
+		updateExternalPendingMembers,
 	];
 
 	for (const report of reports) {
