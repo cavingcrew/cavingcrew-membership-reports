@@ -1,5 +1,5 @@
 function onOpen() {
-	var ui = SpreadsheetApp.getUi();
+	const ui = SpreadsheetApp.getUi();
 	ui.createMenu("Mark Membership")
 		.addItem("Remove Membership", "unMembership")
 		.addItem("Give Membership", "giveMembership")
@@ -23,40 +23,40 @@ function onOpen() {
 }
 
 function refreshBCACIMProforma() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 	reportBCACIMProforma(stmt);
 	stmt.close();
 	conn.close();
 }
 
 function refreshMembersToProcess() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 	reportMembersToProcess(stmt);
 	stmt.close();
 	conn.close();
 }
 
 function refreshMembersProcessed() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 	reportMembersProcessed(stmt);
 	stmt.close();
 	conn.close();
 }
 
 function refreshCancellation() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 	reportCancellation(stmt);
 	stmt.close();
 	conn.close();
 }
 
 function refreshPendingMembers() {
-	var conn = Jdbc.getConnection(url, username, password);
-	var stmt = conn.createStatement();
+	const conn = Jdbc.getConnection(url, username, password);
+	const stmt = conn.createStatement();
 	reportPendingMembers(stmt);
 	stmt.close();
 	conn.close();
