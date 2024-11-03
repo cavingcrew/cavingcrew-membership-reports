@@ -68,9 +68,9 @@ function pokeToWordPressProducts(data, product_id) {
 	//console.log("Wordpress " + data);
 
 	const encodedAuthInformation = Utilities.base64Encode(
-		apiusername + ":" + apipassword,
+		`${apiusername}:${apipassword}`,
 	);
-	const headers = { Authorization: "Basic " + encodedAuthInformation };
+	const headers = { Authorization: `Basic ${encodedAuthInformation}` };
 	const options = {
 		method: "post",
 		contentType: "application/json",
@@ -87,9 +87,9 @@ function pokeToWooUserMeta(data, user_id) {
 	//console.log("Wordpress " + data);
 
 	const encodedAuthInformation = Utilities.base64Encode(
-		apiusername + ":" + apipassword,
+		`${apiusername}:${apipassword}`,
 	);
-	const headers = { Authorization: "Basic " + encodedAuthInformation };
+	const headers = { Authorization: `Basic ${encodedAuthInformation}` };
 	const options = {
 		method: "post",
 		contentType: "application/json",

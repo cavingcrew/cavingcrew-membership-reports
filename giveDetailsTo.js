@@ -85,10 +85,10 @@ function processBCANumberFromProforma(sheet, row, bcaNumber) {
 }
 
 function giveCompetency(meta_key, meta_value) {
-	var spreadsheet = SpreadsheetApp.getActive();
-	var sheet = spreadsheet.getSheetByName("BCA-CIM-Proforma");
-	var active_range = sheet.getActiveRange();
-	var currentRow = active_range.getRowIndex();
+	const spreadsheet = SpreadsheetApp.getActive();
+	const sheet = spreadsheet.getSheetByName("BCA-CIM-Proforma");
+	const active_range = sheet.getActiveRange();
+	const currentRow = active_range.getRowIndex();
 
 	if (currentRow <= 1) {
 		Browser.msgBox("Select an actual signup", Browser.Buttons.OK);
@@ -100,18 +100,18 @@ function giveCompetency(meta_key, meta_value) {
 	}
 
 	// Get headers from row 1
-	var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
 	// Find the index of the 'id' column (adding 1 since array index starts at 0 but sheets start at 1)
-	var idColumnIndex = headers.indexOf("id") + 1;
+	const idColumnIndex = headers.indexOf("id") + 1;
 
 	if (idColumnIndex === 0) {
 		Browser.msgBox("Could not find id column", Browser.Buttons.OK);
 		return;
 	}
 
-	var user_id = sheet.getRange(currentRow, idColumnIndex, 1, 1).getValue();
-	var first_name = sheet.getRange(currentRow, 1, 1, 1).getValue();
+	const user_id = sheet.getRange(currentRow, idColumnIndex, 1, 1).getValue();
+	const first_name = sheet.getRange(currentRow, 1, 1, 1).getValue();
 
 	if (user_id === "" || user_id === "user_id") {
 		Browser.msgBox("No User ID Found", Browser.Buttons.OK);
