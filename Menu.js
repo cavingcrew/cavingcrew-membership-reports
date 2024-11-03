@@ -18,6 +18,7 @@ function onOpen() {
       .addItem('Refresh Processed Members', 'refreshMembersProcessed')
       .addSeparator()
       .addItem('Refresh Cancellation', 'refreshCancellation')
+      .addItem('Refresh Pending Members', 'refreshPendingMembers')
       .addToUi();   
 }
 
@@ -50,6 +51,14 @@ function refreshCancellation() {
   var conn = Jdbc.getConnection(url, username, password);
   var stmt = conn.createStatement();
   reportCancellation(stmt);
+  stmt.close();
+  conn.close();
+}
+
+function refreshPendingMembers() {
+  var conn = Jdbc.getConnection(url, username, password);
+  var stmt = conn.createStatement();
+  reportPendingMembers(stmt);
   stmt.close();
   conn.close();
 }

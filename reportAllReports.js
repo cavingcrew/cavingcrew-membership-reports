@@ -8,6 +8,7 @@ function readData() {
 		reportMembersProcessed,
 		reportCancellation,
 		reportMemberContacts,
+		reportPendingMembers,
 	];
 
 	reports.forEach((report) => report(stmt));
