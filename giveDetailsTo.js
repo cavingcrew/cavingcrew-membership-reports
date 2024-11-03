@@ -42,7 +42,7 @@ function setBCANumber() {
 				);
 		}
 	} catch (error) {
-		ui.alert("Error: " + error.message);
+		ui.alert(`Error: ${error.message}`);
 	}
 }
 
@@ -120,9 +120,9 @@ function giveCompetency(meta_key, meta_value) {
 
 	if (
 		Browser.msgBox(
-			"Update details for " + first_name + "? \n User " + user_id,
+			`Update details for ${first_name}? \n User ${user_id}`,
 			Browser.Buttons.OK_CANCEL,
-		) == "ok"
+		) === "ok"
 	) {
 		const cc_attendance_setter = Session.getActiveUser().getEmail();
 
@@ -131,10 +131,10 @@ function giveCompetency(meta_key, meta_value) {
 		const datetime = Date.now();
 		//Logger.log(datetime);
 
-		const meta_key_given_at = meta_key + "_marked_given_at";
-		const meta_key_given_by = meta_key + "_marked_given_by";
+		const meta_key_given_at = `${meta_key}_marked_given_at`;
+		const meta_key_given_by = `${meta_key}_marked_given_by`;
 
-		var data = {
+		const data = {
 			meta_data: [
 				{ key: meta_key, value: meta_value },
 				{ key: meta_key_given_at, value: datetime },
@@ -153,7 +153,7 @@ function giveCompetency(meta_key, meta_value) {
 		//Logger.log(returndata.data.id); //null
 
 		const search = returndata.meta_data.find(
-			({ key }) => key == meta_key,
+			({ key }) => key === meta_key,
 		)?.value;
 
 		//Logger.log(search);
@@ -164,12 +164,9 @@ function giveCompetency(meta_key, meta_value) {
 			sheet.getRange(currentRow, 16, 1, 1).setValue(meta_value); // paste the blank variables into the cells to delete contents
 
 			return meta_value;
-		} else {
-			Logger.log("ERROR" + search);
-
-			return "ERROR" + search;
 		}
-		return "ERROR";
+		Logger.log(`ERROR${search}`);
+		return `ERROR${search}`;
 	}
 
 	//Logger.log(returnvalue.meta_data);

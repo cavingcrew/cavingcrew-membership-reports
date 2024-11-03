@@ -187,7 +187,7 @@ function makeReport(stmt, reportConfig) {
 	appendToSheet(sheet, results);
 
 	if (reportConfig.formatting) {
-		reportConfig.formatting.forEach((format) => {
+		for (const format of reportConfig.formatting) {
 			if (format.type === "color") {
 				setColoursFormat(sheet, format.column, format.search, format.color);
 			} else if (format.type === "text") {
