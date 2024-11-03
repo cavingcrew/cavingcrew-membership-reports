@@ -49,16 +49,16 @@ function giveCompetency(meta_key,meta_value){
   var sheet = spreadsheet.getSheetByName('BCA-CIM-Proforma');
   var active_range = sheet.getActiveRange();
   var currentRow = active_range.getRowIndex();
-  
+
   if(currentRow <= 1){Browser.msgBox('Select an actual signup', Browser.Buttons.OK); return;}
   if(currentRow >= 100){Browser.msgBox('Select an actual signup', Browser.Buttons.OK); return;}
 
   // Get headers from row 1
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  
+
   // Find the index of the 'id' column (adding 1 since array index starts at 0 but sheets start at 1)
   var idColumnIndex = headers.indexOf('id') + 1;
-  
+
   if(idColumnIndex === 0) {
     Browser.msgBox('Could not find id column', Browser.Buttons.OK);
     return;
@@ -72,7 +72,7 @@ function giveCompetency(meta_key,meta_value){
 
 
 
- if (Browser.msgBox("Given a competency to " +first_name + "? \n User " + user_id, Browser.Buttons.OK_CANCEL) == "ok") {
+ if (Browser.msgBox("Update details for " +first_name + "? \n User " + user_id, Browser.Buttons.OK_CANCEL) == "ok") {
 
 
 
