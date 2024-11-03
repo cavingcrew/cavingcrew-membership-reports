@@ -38,7 +38,7 @@ function setBCANumber() {
 				break;
 			default:
 				ui.alert(
-					'Please use this function from either the "To Process" or "BCA-CIM-Proforma" sheets',
+					'Please use this function from the "To Process" sheets',
 				);
 		}
 	} catch (error) {
