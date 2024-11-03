@@ -1,4 +1,3 @@
-
 function setBCANumber() {
 	const ui = SpreadsheetApp.getUi();
 	const activeSheet = SpreadsheetApp.getActiveSheet();
@@ -30,9 +29,7 @@ function setBCANumber() {
 				processBCANumberFromProforma(activeSheet, currentRow, bcaNumber);
 				break;
 			default:
-				ui.alert(
-					'Please use this function from the "To Process" sheets',
-				);
+				ui.alert('Please use this function from the "To Process" sheets');
 		}
 	} catch (error) {
 		ui.alert(`Error: ${error.message}`);
@@ -76,4 +73,3 @@ function processBCANumberFromProforma(sheet, row, bcaNumber) {
 
 	sheet.getRange(row, membershipNumberCol).setValue(bcaNumber);
 }
-
