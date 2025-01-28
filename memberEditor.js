@@ -83,35 +83,33 @@ function showEditDialog(userId, row) {
     <div id="loading" class="loading">Loading member data...</div>
     <form id="memberForm" style="display: none">
       <div class="form-group">
-        <label for="forenames">Forenames:</label>
-        <input type="text" id="forenames" name="forenames">
+        <label for="first_name">Forenames:</label>
+        <input type="text" id="first_name" name="first_name">
       </div>
       <div class="form-group">
-        <label for="surname">Surname:</label>
-        <input type="text" id="surname" name="surname">
+        <label for="last_name">Surname:</label>
+        <input type="text" id="last_name" name="last_name">
       </div>
       <div class="form-group">
-        <label for="membershipNumber">Membership Number:</label>
-        <input type="text" id="membershipNumber" name="membershipNumber">
+        <label for="previous_name">Previous Name:</label>
+        <input type="text" id="previous_name" name="previous_name">
       </div>
       <div class="form-group">
-        <label for="primaryClubName">Primary Club Name:</label>
-        <input type="text" id="primaryClubName" name="primaryClubName">
+        <label for="admin-bca-number">Membership Number:</label>
+        <input type="text" id="admin-bca-number" name="admin-bca-number">
       </div>
       <div class="form-group">
-        <label for="joiningDate">Joining Date (DD/MM/YYYY):</label>
-        <input type="text" id="joiningDate" name="joiningDate">
+        <label for="admin-other-club-name">Primary Club Name:</label>
+        <input type="text" id="admin-other-club-name" name="admin-other-club-name" 
+               placeholder="Leave empty for The Caving Crew">
       </div>
       <div class="form-group">
-        <label for="insuranceStatus">Insurance Status:</label>
-        <select id="insuranceStatus" name="insuranceStatus">
-          <option value="C">BCA insurance via us (C)</option>
-          <option value="AN">BCA insurance via other club (AN)</option>
-        </select>
+        <label for="membership_joining_date">Joining Date (DD/MM/YYYY):</label>
+        <input type="text" id="membership_joining_date" name="membership_joining_date">
       </div>
       <div class="form-group">
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender">
+        <label for="admin-personal-pronouns">Gender:</label>
+        <select id="admin-personal-pronouns" name="admin-personal-pronouns">
           <option value="m">Male (m)</option>
           <option value="f">Female (f)</option>
           <option value="n">Non-binary (n)</option>
@@ -119,28 +117,28 @@ function showEditDialog(userId, row) {
         </select>
       </div>
       <div class="form-group">
-        <label for="yearOfBirth">Year of Birth:</label>
-        <input type="text" id="yearOfBirth" name="yearOfBirth">
+        <label for="admin-personal-year-of-birth">Year of Birth:</label>
+        <input type="text" id="admin-personal-year-of-birth" name="admin-personal-year-of-birth">
       </div>
       <div class="form-group">
-        <label for="address1">Address 1:</label>
-        <input type="text" id="address1" name="address1">
+        <label for="billing_address_1">Address 1:</label>
+        <input type="text" id="billing_address_1" name="billing_address_1">
       </div>
       <div class="form-group">
-        <label for="address2">Address 2:</label>
-        <input type="text" id="address2" name="address2">
+        <label for="billing_address_2">Address 2:</label>
+        <input type="text" id="billing_address_2" name="billing_address_2">
       </div>
       <div class="form-group">
-        <label for="town">Town:</label>
-        <input type="text" id="town" name="town">
+        <label for="billing_city">Town:</label>
+        <input type="text" id="billing_city" name="billing_city">
       </div>
       <div class="form-group">
-        <label for="county">County:</label>
-        <input type="text" id="county" name="county">
+        <label for="billing_state">County:</label>
+        <input type="text" id="billing_state" name="billing_state">
       </div>
       <div class="form-group">
-        <label for="postcode">Postcode:</label>
-        <input type="text" id="postcode" name="postcode">
+        <label for="billing_postcode">Postcode:</label>
+        <input type="text" id="billing_postcode" name="billing_postcode">
       </div>
       <input type="hidden" id="userId" value="${userId}">
       <input type="hidden" id="row" value="${row}">
@@ -246,13 +244,16 @@ function saveMemberChanges(formData) {
 	// Update WordPress
 	const userMetaData = {
 		meta_data: [
-			{ key: "admin-personal-pronouns", value: formData.gender },
-			{ key: "admin-personal-year-of-birth", value: formData.yearOfBirth },
-			{ key: "billing_address_1", value: formData.address1 },
-			{ key: "billing_address_2", value: formData.address2 },
-			{ key: "billing_city", value: formData.town },
-			{ key: "billing_postcode", value: formData.postcode },
-			{ key: "admin-bca-number", value: formData.membershipNumber },
+			{ key: "admin-personal-pronouns", value: formData["admin-personal-pronouns"] },
+			{ key: "admin-personal-year-of-birth", value: formData["admin-personal-year-of-birth"] },
+			{ key: "admin-bca-number", value: formData["admin-bca-number"] },
+			{ key: "admin-other-club-name", value: formData["admin-other-club-name"] },
+			{ key: "membership_joining_date", value: formData["membership_joining_date"] },
+			{ key: "billing_address_1", value: formData["billing_address_1"] },
+			{ key: "billing_address_2", value: formData["billing_address_2"] },
+			{ key: "billing_city", value: formData["billing_city"] },
+			{ key: "billing_state", value: formData["billing_state"] },
+			{ key: "billing_postcode", value: formData["billing_postcode"] },
 		],
 	};
 
@@ -276,19 +277,21 @@ function updateSheetRow(sheet, row, formData) {
 	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
 	const updates = new Map([
-		["Forenames", formData.forenames],
-		["Surname", formData.surname],
-		["Membership Number", formData.membershipNumber],
-		["Primary Club Name", formData.primaryClubName],
-		["Joining Date", formData.joiningDate],
-		["Insurance Status", formData.insuranceStatus],
-		["Gender", formData.gender],
-		["Year Of Birth", formData.yearOfBirth],
-		["Address 1", formData.address1],
-		["Address 2", formData.address2],
-		["Town", formData.town],
-		["County", formData.county],
-		["Postcode", formData.postcode],
+		["Forenames", formData.first_name],
+		["Surname", formData.last_name],
+		["Previous Name", formData.previous_name],
+		["Membership Number", formData["admin-bca-number"]],
+		["Primary Club Name", formData["admin-other-club-name"] || "The Caving Crew"],
+		["Joining Date", formData.membership_joining_date],
+		["Insurance Status", formData["admin-other-club-name"] ? "AN" : "C"],
+		["Fee Paid", formData["admin-other-club-name"] ? "£0" : "£20"],
+		["Gender", formData["admin-personal-pronouns"]],
+		["Year Of Birth", formData["admin-personal-year-of-birth"]],
+		["Address 1", formData.billing_address_1],
+		["Address 2", formData.billing_address_2],
+		["Town", formData.billing_city],
+		["County", formData.billing_state],
+		["Postcode", formData.billing_postcode],
 	]);
 
 	updates.forEach((value, header) => {
