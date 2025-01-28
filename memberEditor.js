@@ -294,12 +294,12 @@ function getMemberData(userId, row) {
 	});
 
 	// Ensure all mapped fields exist even if empty
-	Object.keys(headerMapping).forEach((header) => {
+	for (const header of Object.keys(headerMapping)) {
 		const mappedKey = headerMapping[header];
-		if (!data.hasOwnProperty(mappedKey)) {
+		if (!Object.hasOwn(data, mappedKey)) {
 			data[mappedKey] = "";
 		}
-	});
+	}
 
 	// Log the data for debugging
 	console.log("Mapped data:", data);
