@@ -217,10 +217,20 @@ function getMemberData(userId, row) {
 
 	// Create mapping for special cases
 	const headerMapping = {
-		"Membership Number": "membershipnumber",
-		"Primary Club Name": "primaryclubname",
-		"Joining Date": "joiningdate",
-		"Year Of Birth": "yearofbirth",
+		"Forenames": "first_name",
+		"Surname": "last_name", 
+		"Previous Name": "previous_name",
+		"Membership Number": "admin-bca-number",
+		"Primary Club Name": "admin-other-club-name",
+		"Joining Date": "membership_joining_date",
+		"Email": "user_email",
+		"Gender": "admin-personal-pronouns", 
+		"Year Of Birth": "admin-personal-year-of-birth",
+		"Address 1": "billing_address_1",
+		"Address 2": "billing_address_2",
+		"Town": "billing_city",
+		"County": "billing_state",
+		"Postcode": "billing_postcode"
 	};
 
 	const data = {};
