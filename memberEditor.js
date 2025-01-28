@@ -225,10 +225,10 @@ function getMemberData(userId, row) {
 
 	const data = {};
 	headers.forEach((header, index) => {
-		// Use mapping if exists, otherwise convert header to lowercase and remove spaces
-		const key =
-			headerMapping[header] || header.toLowerCase().replace(/\s+/g, "");
-		data[key] = rowData[index] || ""; // Add empty string fallback
+		const mappedKey = headerMapping[header];
+		if (mappedKey) {
+			data[mappedKey] = rowData[index] || "";
+		}
 	});
 
 	// Log the data for debugging
@@ -288,26 +288,23 @@ function saveMemberChanges(formData) {
 function updateSheetRow(sheet, row, formData) {
 	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-	const updates = new Map([
-		["Forenames", formData.first_name],
-		["Surname", formData.last_name],
-		["Previous Name", formData.previous_name],
-		["Membership Number", formData["admin-bca-number"]],
-		[
-			"Primary Club Name",
-			formData["admin-other-club-name"] || "The Caving Crew",
-		],
-		["Joining Date", formData.membership_joining_date],
-		["Insurance Status", formData["admin-other-club-name"] ? "AN" : "C"],
-		["Fee Paid", formData["admin-other-club-name"] ? "£0" : "£20"],
-		["Gender", formData["admin-personal-pronouns"]],
-		["Year Of Birth", formData["admin-personal-year-of-birth"]],
-		["Address 1", formData.billing_address_1],
-		["Address 2", formData.billing_address_2],
-		["Town", formData.billing_city],
-		["County", formData.billing_state],
-		["Postcode", formData.billing_postcode],
-	]);
+	const updates = new Map();
+	Object.entries(headerMapping).forEach(([header, field]) => {
+		let value = formData[field] || "";
+		
+		// Handle special cases
+		if (header === "Primary Club Name" && !value) {
+			value = "The Caving Crew";
+		}
+		if (header === "Insurance Status") {
+			value = formData["admin-other-club-name"] ? "AN" : "C";
+		}
+		if (header === "Fee Paid") {
+			value = formData["admin-other-club-name"] ? "£0" : "£20";
+		}
+		
+		updates.set(header, value);
+	});
 
 	updates.forEach((value, header) => {
 		const col = findColumnIndex(sheet, header);
