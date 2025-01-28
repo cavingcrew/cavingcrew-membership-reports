@@ -251,44 +251,22 @@ function saveMemberChanges(formData) {
 	const userId = formData.userId;
 	const row = Number.parseInt(formData.row);
 
-	// Update WordPress
-	const userMetaData = {
-		first_name: formData.first_name,
-		last_name: formData.last_name,
-		meta_data: [
-			{
-				key: "admin-personal-pronouns",
-				value: formData["admin-personal-pronouns"],
-			},
-			{
-				key: "admin-personal-year-of-birth",
-				value: formData["admin-personal-year-of-birth"],
-			},
-			{ key: "admin-bca-number", value: formData["admin-bca-number"] },
-			{
-				key: "admin-other-club-name",
-				value: formData["admin-other-club-name"],
-			},
-			{
-				key: "membership_joining_date",
-				value: formData.membership_joining_date,
-			},
-		],
-		billing: {
-			address_1: formData.billing_address_1,
-			address_2: formData.billing_address_2,
-			city: formData.billing_city,
-			state: formData.billing_state,
-			postcode: formData.billing_postcode,
-		},
-	};
-
 	try {
-		const response = pokeToWooUserMeta(userMetaData, userId);
-		if (response.getResponseCode() !== 200) {
-			console.error("WordPress API Response:", response.getContentText());
-			throw new Error("Failed to update WordPress user data");
-		}
+        // Use the new updateWooUser function
+        const response = updateWooUser(userId, {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            'admin-personal-pronouns': formData['admin-personal-pronouns'],
+            'admin-personal-year-of-birth': formData['admin-personal-year-of-birth'],
+            'admin-bca-number': formData['admin-bca-number'],
+            'admin-other-club-name': formData['admin-other-club-name'],
+            'membership_joining_date': formData.membership_joining_date,
+            'billing_address_1': formData.billing_address_1,
+            'billing_address_2': formData.billing_address_2,
+            'billing_city': formData.billing_city,
+            'billing_state': formData.billing_state,
+            'billing_postcode': formData.billing_postcode
+        });
 
 		// Update spreadsheet
 		const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");

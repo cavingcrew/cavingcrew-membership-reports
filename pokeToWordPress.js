@@ -83,23 +83,81 @@ function pokeToWordPressProducts(data, product_id) {
 	// console.log(response);
 }
 
+function updateWooUser(userId, userData) {
+    const { user, datetime } = getCurrentUserAndTime();
+
+    // Transform the input data into the correct format
+    const userMetaData = {
+        meta_data: []
+    };
+
+    // Add standard user fields if provided
+    if (userData.first_name) userMetaData.first_name = userData.first_name;
+    if (userData.last_name) userMetaData.last_name = userData.last_name;
+    if (userData.email) userMetaData.email = userData.email;
+
+    // Add meta data fields with audit trail
+    const metaFields = [
+        'admin-bca-number',
+        'admin-personal-pronouns',
+        'admin-personal-year-of-birth',
+        'admin-other-club-name',
+        'membership_joining_date',
+        'billing_address_1',
+        'billing_address_2',
+        'billing_city',
+        'billing_state',
+        'billing_postcode'
+    ];
+
+    metaFields.forEach(field => {
+        if (userData[field] !== undefined) {
+            // Add the main field
+            userMetaData.meta_data.push({
+                key: field,
+                value: userData[field]
+            });
+
+            // Add audit trail fields
+            userMetaData.meta_data.push({
+                key: `${field}_marked_given_at`,
+                value: datetime
+            });
+            userMetaData.meta_data.push({
+                key: `${field}_marked_given_by`,
+                value: user
+            });
+        }
+    });
+
+    const encodedAuthInformation = Utilities.base64Encode(
+        `${apiusername}:${apipassword}`
+    );
+    
+    const options = {
+        method: "put",
+        contentType: "application/json",
+        headers: {
+            Authorization: `Basic ${encodedAuthInformation}`
+        },
+        payload: JSON.stringify(userMetaData),
+        muteHttpExceptions: true
+    };
+
+    const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${userId}`;
+    const response = UrlFetchApp.fetch(apiurl, options);
+
+    // Log response for debugging
+    console.log('API Response:', response.getContentText());
+
+    // Check response
+    if (response.getResponseCode() !== 200) {
+        throw new Error(`Failed to update user: ${response.getContentText()}`);
+    }
+
+    return response;
+}
+
 function pokeToWooUserMeta(data, user_id) {
-	const encodedAuthInformation = Utilities.base64Encode(
-		`${apiusername}:${apipassword}`,
-	);
-	const headers = { Authorization: `Basic ${encodedAuthInformation}` };
-	const options = {
-		method: "put", // Changed from "post" to "put"
-		contentType: "application/json",
-		headers: headers,
-		payload: JSON.stringify(data),
-		muteHttpExceptions: true, // Added to get full error response
-	};
-	const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${user_id}`;
-	const response = UrlFetchApp.fetch(apiurl, options);
-
-	// Log response for debugging
-	console.log("API Response:", response.getContentText());
-
-	return response;
+    return updateWooUser(user_id, data);
 }
