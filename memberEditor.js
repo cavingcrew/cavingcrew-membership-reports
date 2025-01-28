@@ -41,7 +41,10 @@ function getUserId(sheet, row) {
 }
 
 function showEditDialog(userId, row) {
-	const html = HtmlService.createHtmlOutput(`
+    // Add debug logging
+    console.log("Opening edit dialog for userId:", userId, "row:", row);
+    
+    const html = HtmlService.createHtmlOutput(`
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       .form-group { margin-bottom: 15px; }
@@ -82,6 +85,8 @@ function showEditDialog(userId, row) {
     </style>
     <div id="loading" class="loading">Loading member data...</div>
     <form id="memberForm" style="display: none">
+      <!-- Add debug output for userId -->
+      <div id="debug"></div>
       <div class="form-group">
         <label for="first_name">Forenames:</label>
         <input type="text" id="first_name" name="first_name">
@@ -140,8 +145,8 @@ function showEditDialog(userId, row) {
         <label for="billing_postcode">Postcode:</label>
         <input type="text" id="billing_postcode" name="billing_postcode">
       </div>
-      <input type="hidden" id="userId" value="${userId}">
-      <input type="hidden" id="row" value="${row}">
+      <input type="hidden" id="userId" name="userId" value="${userId}">
+      <input type="hidden" id="row" name="row" value="${row}">
       <button type="submit" onclick="submitForm(); return false;">
         <span id="submitText">Save Changes</span>
         <span id="savingText" style="display: none">Saving...</span>
@@ -164,13 +169,24 @@ function showEditDialog(userId, row) {
         errorMessage.style.display = 'none';
       }
 
+      // Add debug output
+      document.getElementById('debug').textContent = 'Debug: userId = ${userId}';
+      
       function submitForm() {
         clearError();
         submitText.style.display = 'none';
         savingText.style.display = 'inline';
         
         const formData = {};
-        new FormData(form).forEach((value, key) => formData[key] = value);
+        new FormData(form).forEach((value, key) => {
+          formData[key] = value;
+          // Debug log
+          console.log('Form data:', key, value);
+        });
+        
+        // Ensure userId is included
+        formData.userId = document.getElementById('userId').value;
+        console.log('Submitting with userId:', formData.userId);
         
         google.script.run
           .withSuccessHandler(() => {
@@ -248,10 +264,18 @@ function getMemberData(userId, row) {
 }
 
 function saveMemberChanges(formData) {
-	const userId = formData.userId;
-	const row = Number.parseInt(formData.row);
+    // Add debug logging
+    console.log("Saving changes for user:", formData.userId);
+    console.log("Form data received:", formData);
 
-	try {
+    const userId = formData.userId;
+    const row = Number.parseInt(formData.row);
+
+    if (!userId) {
+        throw new Error("No user ID provided");
+    }
+
+    try {
 		// Use the new updateWooUser function
 		const response = updateWooUser(userId, {
 			first_name: formData.first_name,
