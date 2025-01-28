@@ -248,51 +248,45 @@ function getMemberData(userId, row) {
 }
 
 function saveMemberChanges(formData) {
-	const userId = formData.userId;
-	const row = Number.parseInt(formData.row);
+    const userId = formData.userId;
+    const row = Number.parseInt(formData.row);
 
-	// Update WordPress
-	const userMetaData = {
-		meta_data: [
-			{
-				key: "admin-personal-pronouns",
-				value: formData["admin-personal-pronouns"],
-			},
-			{
-				key: "admin-personal-year-of-birth",
-				value: formData["admin-personal-year-of-birth"],
-			},
-			{ key: "admin-bca-number", value: formData["admin-bca-number"] },
-			{
-				key: "admin-other-club-name",
-				value: formData["admin-other-club-name"],
-			},
-			{
-				key: "membership_joining_date",
-				value: formData["membership_joining_date"],
-			},
-			{ key: "billing_address_1", value: formData["billing_address_1"] },
-			{ key: "billing_address_2", value: formData["billing_address_2"] },
-			{ key: "billing_city", value: formData["billing_city"] },
-			{ key: "billing_state", value: formData["billing_state"] },
-			{ key: "billing_postcode", value: formData["billing_postcode"] },
-		],
-	};
+    // Update WordPress
+    const userMetaData = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        meta_data: [
+            { key: "admin-personal-pronouns", value: formData["admin-personal-pronouns"] },
+            { key: "admin-personal-year-of-birth", value: formData["admin-personal-year-of-birth"] },
+            { key: "admin-bca-number", value: formData["admin-bca-number"] },
+            { key: "admin-other-club-name", value: formData["admin-other-club-name"] },
+            { key: "membership_joining_date", value: formData["membership_joining_date"] },
+        ],
+        billing: {
+            address_1: formData["billing_address_1"],
+            address_2: formData["billing_address_2"], 
+            city: formData["billing_city"],
+            state: formData["billing_state"],
+            postcode: formData["billing_postcode"]
+        }
+    };
 
-	try {
-		const response = pokeToWooUserMeta(userMetaData, userId);
-		if (response.getResponseCode() !== 200) {
-			throw new Error("Failed to update WordPress user data");
-		}
+    try {
+        const response = pokeToWooUserMeta(userMetaData, userId);
+        if (response.getResponseCode() !== 200) {
+            console.error('WordPress API Response:', response.getContentText());
+            throw new Error("Failed to update WordPress user data");
+        }
 
-		// Update spreadsheet
-		const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
-		updateSheetRow(sheet, row, formData);
+        // Update spreadsheet
+        const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
+        updateSheetRow(sheet, row, formData);
 
-		return true;
-	} catch (error) {
-		throw new Error(`Failed to save changes: ${error.message}`);
-	}
+        return true;
+    } catch (error) {
+        console.error('Error details:', error);
+        throw new Error(`Failed to save changes: ${error.message}`);
+    }
 }
 
 function updateSheetRow(sheet, row, formData) {
