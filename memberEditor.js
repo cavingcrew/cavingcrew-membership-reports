@@ -1,47 +1,47 @@
 function editMemberDetails() {
-  const ui = SpreadsheetApp.getUi();
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const currentRow = sheet.getActiveRange().getRowIndex();
+	const ui = SpreadsheetApp.getUi();
+	const sheet = SpreadsheetApp.getActiveSheet();
+	const currentRow = sheet.getActiveRange().getRowIndex();
 
-  // Validate selection
-  if (!validateSelection(sheet, currentRow)) {
-    return;
-  }
+	// Validate selection
+	if (!validateSelection(sheet, currentRow)) {
+		return;
+	}
 
-  // Get user ID
-  const userId = getUserId(sheet, currentRow);
-  if (!userId) {
-    ui.alert("Could not find user ID");
-    return;
-  }
+	// Get user ID
+	const userId = getUserId(sheet, currentRow);
+	if (!userId) {
+		ui.alert("Could not find user ID");
+		return;
+	}
 
-  // Show edit dialog
-  showEditDialog(userId, currentRow);
+	// Show edit dialog
+	showEditDialog(userId, currentRow);
 }
 
 function validateSelection(sheet, row) {
-  const ui = SpreadsheetApp.getUi();
-  
-  if (row <= 1) {
-    ui.alert("Please select a member row");
-    return false;
-  }
+	const ui = SpreadsheetApp.getUi();
 
-  if (sheet.getName() !== "BCA-CIM-Proforma") {
-    ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
-    return false;
-  }
+	if (row <= 1) {
+		ui.alert("Please select a member row");
+		return false;
+	}
 
-  return true;
+	if (sheet.getName() !== "BCA-CIM-Proforma") {
+		ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
+		return false;
+	}
+
+	return true;
 }
 
 function getUserId(sheet, row) {
-  const idCol = findColumnIndex(sheet, "id");
-  return sheet.getRange(row, idCol).getValue();
+	const idCol = findColumnIndex(sheet, "id");
+	return sheet.getRange(row, idCol).getValue();
 }
 
 function showEditDialog(userId, row) {
-  const html = HtmlService.createHtmlOutput(`
+	const html = HtmlService.createHtmlOutput(`
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       .form-group { margin-bottom: 15px; }
