@@ -160,5 +160,35 @@ function updateWooUser(userId, userData) {
 }
 
 function pokeToWooUserMeta(data, user_id) {
-	return updateWooUser(user_id, data);
+    console.log('=== WooCommerce API Debug ===');
+    console.log('User ID:', user_id);
+    console.log('API URL:', `https://www.${apidomain}/wp-json/wc/v3/customers/${user_id}`);
+    console.log('Request Method:', 'post');
+    console.log('Request Headers:', {
+        'Authorization': 'Basic ' + Utilities.base64Encode(`${apiusername}:${apipassword}`),
+        'Content-Type': 'application/json'
+    });
+    console.log('Request Payload:', JSON.stringify(data, null, 2));
+
+    const encodedAuthInformation = Utilities.base64Encode(
+        apiusername + ":" + apipassword,
+    );
+    const headers = { Authorization: "Basic " + encodedAuthInformation };
+    const options = {
+        method: "post",
+        contentType: "application/json",
+        headers: headers,
+        payload: JSON.stringify(data),
+        muteHttpExceptions: true  // Add this to get full error responses
+    };
+    const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${user_id}`;
+    
+    const response = UrlFetchApp.fetch(apiurl, options);
+    
+    console.log('Response Status:', response.getResponseCode());
+    console.log('Response Headers:', response.getAllHeaders());
+    console.log('Response Body:', response.getContentText());
+    console.log('=== End Debug ===');
+
+    return response;
 }
