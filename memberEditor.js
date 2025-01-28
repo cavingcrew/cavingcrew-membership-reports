@@ -1,32 +1,32 @@
 function editMemberDetails() {
-  const ui = SpreadsheetApp.getUi();
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const currentRow = sheet.getActiveRange().getRowIndex();
+	const ui = SpreadsheetApp.getUi();
+	const sheet = SpreadsheetApp.getActiveSheet();
+	const currentRow = sheet.getActiveRange().getRowIndex();
 
-  if (currentRow <= 1) {
-    ui.alert("Please select a member row");
-    return;
-  }
+	if (currentRow <= 1) {
+		ui.alert("Please select a member row");
+		return;
+	}
 
-  // Only allow editing on BCA-CIM-Proforma sheet
-  if (sheet.getName() !== "BCA-CIM-Proforma") {
-    ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
-    return;
-  }
+	// Only allow editing on BCA-CIM-Proforma sheet
+	if (sheet.getName() !== "BCA-CIM-Proforma") {
+		ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
+		return;
+	}
 
-  const idCol = findColumnIndex(sheet, "id");
-  const userId = sheet.getRange(currentRow, idCol).getValue();
+	const idCol = findColumnIndex(sheet, "id");
+	const userId = sheet.getRange(currentRow, idCol).getValue();
 
-  if (!userId) {
-    ui.alert("Could not find user ID");
-    return;
-  }
+	if (!userId) {
+		ui.alert("Could not find user ID");
+		return;
+	}
 
-  showEditDialog(userId, currentRow);
+	showEditDialog(userId, currentRow);
 }
 
 function showEditDialog(userId, row) {
-  const html = HtmlService.createHtmlOutput(`
+	const html = HtmlService.createHtmlOutput(`
     <style>
       .form-group { margin-bottom: 10px; }
       label { display: block; margin-bottom: 5px; }
@@ -121,81 +121,83 @@ function showEditDialog(userId, row) {
       }
     </script>
   `)
-    .setWidth(400)
-    .setHeight(600);
+		.setWidth(400)
+		.setHeight(600);
 
-  SpreadsheetApp.getUi().showModalDialog(html, 'Edit Member Details');
+	SpreadsheetApp.getUi().showModalDialog(html, "Edit Member Details");
 }
 
 function getMemberData(userId, row) {
-  const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const rowData = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
-  
-  const data = {};
-  headers.forEach((header, index) => {
-    data[header.toLowerCase().replace(/\s+/g, '')] = rowData[index];
-  });
-  
-  return data;
+	const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
+	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const rowData = sheet
+		.getRange(row, 1, 1, sheet.getLastColumn())
+		.getValues()[0];
+
+	const data = {};
+	headers.forEach((header, index) => {
+		data[header.toLowerCase().replace(/\s+/g, "")] = rowData[index];
+	});
+
+	return data;
 }
 
 function saveMemberChanges(formData) {
-  const userId = formData.userId;
-  const row = parseInt(formData.row);
-  
-  // Update WordPress
-  const userMetaData = {
-    meta_data: [
-      { key: "admin-personal-pronouns", value: formData.gender },
-      { key: "admin-personal-year-of-birth", value: formData.yearOfBirth },
-      { key: "billing_address_1", value: formData.address1 },
-      { key: "billing_address_2", value: formData.address2 },
-      { key: "billing_city", value: formData.town },
-      { key: "billing_postcode", value: formData.postcode },
-      { key: "admin-bca-number", value: formData.membershipNumber }
-    ]
-  };
+	const userId = formData.userId;
+	const row = Number.parseInt(formData.row);
 
-  try {
-    const response = pokeToWooUserMeta(userMetaData, userId);
-    if (response.getResponseCode() !== 200) {
-      throw new Error("Failed to update WordPress user data");
-    }
+	// Update WordPress
+	const userMetaData = {
+		meta_data: [
+			{ key: "admin-personal-pronouns", value: formData.gender },
+			{ key: "admin-personal-year-of-birth", value: formData.yearOfBirth },
+			{ key: "billing_address_1", value: formData.address1 },
+			{ key: "billing_address_2", value: formData.address2 },
+			{ key: "billing_city", value: formData.town },
+			{ key: "billing_postcode", value: formData.postcode },
+			{ key: "admin-bca-number", value: formData.membershipNumber },
+		],
+	};
 
-    // Update spreadsheet
-    const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
-    updateSheetRow(sheet, row, formData);
-    
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to save changes: ${error.message}`);
-  }
+	try {
+		const response = pokeToWooUserMeta(userMetaData, userId);
+		if (response.getResponseCode() !== 200) {
+			throw new Error("Failed to update WordPress user data");
+		}
+
+		// Update spreadsheet
+		const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
+		updateSheetRow(sheet, row, formData);
+
+		return true;
+	} catch (error) {
+		throw new Error(`Failed to save changes: ${error.message}`);
+	}
 }
 
 function updateSheetRow(sheet, row, formData) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  
-  const updates = new Map([
-    ["Forenames", formData.forenames],
-    ["Surname", formData.surname],
-    ["Membership Number", formData.membershipNumber],
-    ["Primary Club Name", formData.primaryClubName],
-    ["Joining Date", formData.joiningDate],
-    ["Insurance Status", formData.insuranceStatus],
-    ["Gender", formData.gender],
-    ["Year Of Birth", formData.yearOfBirth],
-    ["Address 1", formData.address1],
-    ["Address 2", formData.address2],
-    ["Town", formData.town],
-    ["County", formData.county],
-    ["Postcode", formData.postcode]
-  ]);
+	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-  updates.forEach((value, header) => {
-    const col = findColumnIndex(sheet, header);
-    if (col) {
-      sheet.getRange(row, col).setValue(value);
-    }
-  });
+	const updates = new Map([
+		["Forenames", formData.forenames],
+		["Surname", formData.surname],
+		["Membership Number", formData.membershipNumber],
+		["Primary Club Name", formData.primaryClubName],
+		["Joining Date", formData.joiningDate],
+		["Insurance Status", formData.insuranceStatus],
+		["Gender", formData.gender],
+		["Year Of Birth", formData.yearOfBirth],
+		["Address 1", formData.address1],
+		["Address 2", formData.address2],
+		["Town", formData.town],
+		["County", formData.county],
+		["Postcode", formData.postcode],
+	]);
+
+	updates.forEach((value, header) => {
+		const col = findColumnIndex(sheet, header);
+		if (col) {
+			sheet.getRange(row, col).setValue(value);
+		}
+	});
 }
