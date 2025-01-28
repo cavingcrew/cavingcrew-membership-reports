@@ -41,10 +41,10 @@ function getUserId(sheet, row) {
 }
 
 function showEditDialog(userId, row) {
-    // Add debug logging
-    console.log("Opening edit dialog for userId:", userId, "row:", row);
-    
-    const html = HtmlService.createHtmlOutput(`
+	// Add debug logging
+	console.log("Opening edit dialog for userId:", userId, "row:", row);
+
+	const html = HtmlService.createHtmlOutput(`
     <style>
       body { font-family: Arial, sans-serif; padding: 20px; }
       .form-group { margin-bottom: 15px; }
@@ -264,18 +264,18 @@ function getMemberData(userId, row) {
 }
 
 function saveMemberChanges(formData) {
-    // Add debug logging
-    console.log("Saving changes for user:", formData.userId);
-    console.log("Form data received:", formData);
+	// Add debug logging
+	console.log("Saving changes for user:", formData.userId);
+	console.log("Form data received:", formData);
 
-    const userId = formData.userId;
-    const row = Number.parseInt(formData.row);
+	const userId = formData.userId;
+	const row = Number.parseInt(formData.row);
 
-    if (!userId) {
-        throw new Error("No user ID provided");
-    }
+	if (!userId) {
+		throw new Error("No user ID provided");
+	}
 
-    try {
+	try {
 		// Use the new updateWooUser function
 		const response = updateWooUser(userId, {
 			first_name: formData.first_name,
