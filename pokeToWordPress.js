@@ -110,7 +110,7 @@ function updateWooUser(userId, userData) {
 		"billing_postcode",
 	];
 
-	metaFields.forEach((field) => {
+	for (const field of metaFields) {
 		if (userData[field] !== undefined) {
 			// Add the main field
 			userMetaData.meta_data.push({
@@ -128,7 +128,7 @@ function updateWooUser(userId, userData) {
 				value: user,
 			});
 		}
-	});
+	}
 
 	const encodedAuthInformation = Utilities.base64Encode(
 		`${apiusername}:${apipassword}`,
