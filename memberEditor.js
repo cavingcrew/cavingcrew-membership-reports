@@ -271,15 +271,15 @@ function saveMemberChanges(formData) {
 			},
 			{
 				key: "membership_joining_date",
-				value: formData["membership_joining_date"],
+				value: formData.membership_joining_date,
 			},
 		],
 		billing: {
-			address_1: formData["billing_address_1"],
-			address_2: formData["billing_address_2"],
-			city: formData["billing_city"],
-			state: formData["billing_state"],
-			postcode: formData["billing_postcode"],
+			address_1: formData.billing_address_1,
+			address_2: formData.billing_address_2,
+			city: formData.billing_city,
+			state: formData.billing_state,
+			postcode: formData.billing_postcode,
 		},
 	};
 
