@@ -211,29 +211,32 @@ function showEditDialog(userId, row) {
 }
 
 function getMemberData(userId, row) {
-  const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const rowData = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
+	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const rowData = sheet
+		.getRange(row, 1, 1, sheet.getLastColumn())
+		.getValues()[0];
 
-  // Create mapping for special cases
-  const headerMapping = {
-    "Membership Number": "membershipnumber",
-    "Primary Club Name": "primaryclubname", 
-    "Joining Date": "joiningdate",
-    "Year Of Birth": "yearofbirth"
-  };
+	// Create mapping for special cases
+	const headerMapping = {
+		"Membership Number": "membershipnumber",
+		"Primary Club Name": "primaryclubname",
+		"Joining Date": "joiningdate",
+		"Year Of Birth": "yearofbirth",
+	};
 
-  const data = {};
-  headers.forEach((header, index) => {
-    // Use mapping if exists, otherwise convert header to lowercase and remove spaces
-    const key = headerMapping[header] || header.toLowerCase().replace(/\s+/g, "");
-    data[key] = rowData[index] || ''; // Add empty string fallback
-  });
+	const data = {};
+	headers.forEach((header, index) => {
+		// Use mapping if exists, otherwise convert header to lowercase and remove spaces
+		const key =
+			headerMapping[header] || header.toLowerCase().replace(/\s+/g, "");
+		data[key] = rowData[index] || ""; // Add empty string fallback
+	});
 
-  // Log the data for debugging
-  console.log("Mapped data:", data);
-  
-  return data;
+	// Log the data for debugging
+	console.log("Mapped data:", data);
+
+	return data;
 }
 
 function saveMemberChanges(formData) {
