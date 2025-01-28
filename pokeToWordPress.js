@@ -84,78 +84,79 @@ function pokeToWordPressProducts(data, product_id) {
 }
 
 function updateWooUser(userId, userData) {
-	const { user, datetime } = getCurrentUserAndTime();
+    const { user, datetime } = getCurrentUserAndTime();
 
-	// Transform the input data into the correct format
-	const userMetaData = {
-		meta_data: [],
-	};
+    // Structure the data according to WooCommerce API requirements
+    const data = {
+        meta_data: [],
+        billing: {
+            address_1: userData.billing_address_1 || '',
+            address_2: userData.billing_address_2 || '',
+            city: userData.billing_city || '',
+            state: userData.billing_state || '',
+            postcode: userData.billing_postcode || '',
+            country: 'UK'
+        }
+    };
 
-	// Add standard user fields if provided
-	if (userData.first_name) userMetaData.first_name = userData.first_name;
-	if (userData.last_name) userMetaData.last_name = userData.last_name;
-	if (userData.email) userMetaData.email = userData.email;
+    // Add standard user fields
+    if (userData.first_name) data.first_name = userData.first_name;
+    if (userData.last_name) data.last_name = userData.last_name;
+    if (userData.email) data.email = userData.email;
 
-	// Add meta data fields with audit trail
-	const metaFields = [
-		"admin-bca-number",
-		"admin-personal-pronouns",
-		"admin-personal-year-of-birth",
-		"admin-other-club-name",
-		"membership_joining_date",
-		"billing_address_1",
-		"billing_address_2",
-		"billing_city",
-		"billing_state",
-		"billing_postcode",
-	];
+    // Add meta data fields with audit trail
+    const metaFields = [
+        'admin-bca-number',
+        'admin-personal-pronouns',
+        'admin-personal-year-of-birth',
+        'admin-other-club-name',
+        'membership_joining_date'
+    ];
 
-	for (const field of metaFields) {
-		if (userData[field] !== undefined) {
-			// Add the main field
-			userMetaData.meta_data.push({
-				key: field,
-				value: userData[field],
-			});
+    metaFields.forEach(field => {
+        if (userData[field] !== undefined) {
+            data.meta_data.push({
+                key: field,
+                value: userData[field]
+            });
+            data.meta_data.push({
+                key: `${field}_marked_given_at`,
+                value: datetime
+            });
+            data.meta_data.push({
+                key: `${field}_marked_given_by`,
+                value: user
+            });
+        }
+    });
 
-			// Add audit trail fields
-			userMetaData.meta_data.push({
-				key: `${field}_marked_given_at`,
-				value: datetime,
-			});
-			userMetaData.meta_data.push({
-				key: `${field}_marked_given_by`,
-				value: user,
-			});
-		}
-	}
+    const encodedAuthInformation = Utilities.base64Encode(
+        `${apiusername}:${apipassword}`
+    );
 
-	const encodedAuthInformation = Utilities.base64Encode(
-		`${apiusername}:${apipassword}`,
-	);
+    const options = {
+        method: "put",
+        contentType: "application/json",
+        headers: {
+            Authorization: `Basic ${encodedAuthInformation}`
+        },
+        payload: JSON.stringify(data),
+        muteHttpExceptions: true
+    };
 
-	const options = {
-		method: "put",
-		contentType: "application/json",
-		headers: {
-			Authorization: `Basic ${encodedAuthInformation}`,
-		},
-		payload: JSON.stringify(userMetaData),
-		muteHttpExceptions: true,
-	};
+    // Use the correct customers endpoint
+    const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${userId}`;
+    const response = UrlFetchApp.fetch(apiurl, options);
 
-	const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${userId}`;
-	const response = UrlFetchApp.fetch(apiurl, options);
+    // Log response for debugging
+    console.log('API Response:', response.getContentText());
 
-	// Log response for debugging
-	console.log("API Response:", response.getContentText());
+    // Check response
+    if (response.getResponseCode() !== 200) {
+        throw new Error(`Failed to update user: ${response.getContentText()}`);
+    }
 
-	// Check response
-	if (response.getResponseCode() !== 200) {
-		throw new Error(`Failed to update user: ${response.getContentText()}`);
-	}
-
-	return response;
+    return response;
 }
 
 function pokeToWooUserMeta(data, user_id) {
