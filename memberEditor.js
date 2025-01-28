@@ -305,7 +305,7 @@ function updateSheetRow(sheet, row, formData) {
 	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
 	const updates = new Map();
-	Object.entries(headerMapping).forEach(([header, field]) => {
+	for (const [header, field] of Object.entries(headerMapping)) {
 		let value = formData[field] || "";
 
 		// Handle special cases
@@ -320,7 +320,7 @@ function updateSheetRow(sheet, row, formData) {
 		}
 
 		updates.set(header, value);
-	});
+	}
 
 	updates.forEach((value, header) => {
 		const col = findColumnIndex(sheet, header);
