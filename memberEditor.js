@@ -239,66 +239,72 @@ function showEditDialog(userId, row) {
 }
 
 function getMemberData(userId, row) {
-    const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const rowData = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const sheet = SpreadsheetApp.getActive().getSheetByName("BCA-CIM-Proforma");
+	const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+	const rowData = sheet
+		.getRange(row, 1, 1, sheet.getLastColumn())
+		.getValues()[0];
 
-    // Create mapping for special cases
-    const headerMapping = {
-        "Forenames": "first_name",
-        "Surname": "last_name",
-        "Previous Name": "previous_name",
-        "Membership Number": "admin-bca-number",
-        "Primary Club Name": "admin-other-club-name",
-        "Joining Date": "membership_joining_date",
-        "Email": "user_email",
-        "Gender": "admin-personal-pronouns",
-        "Year Of Birth": "admin-personal-year-of-birth",
-        "Address 1": "billing_address_1",
-        "Address 2": "billing_address_2",
-        "Town": "billing_city",
-        "County": "billing_state",
-        "Postcode": "billing_postcode"
-    };
+	// Create mapping for special cases
+	const headerMapping = {
+		Forenames: "first_name",
+		Surname: "last_name",
+		"Previous Name": "previous_name",
+		"Membership Number": "admin-bca-number",
+		"Primary Club Name": "admin-other-club-name",
+		"Joining Date": "membership_joining_date",
+		Email: "user_email",
+		Gender: "admin-personal-pronouns",
+		"Year Of Birth": "admin-personal-year-of-birth",
+		"Address 1": "billing_address_1",
+		"Address 2": "billing_address_2",
+		Town: "billing_city",
+		County: "billing_state",
+		Postcode: "billing_postcode",
+	};
 
-    const data = {};
-    headers.forEach((header, index) => {
-        const mappedKey = headerMapping[header];
-        if (mappedKey) {
-            let value = rowData[index];
-            
-            // Handle null/undefined values
-            if (value === null || value === undefined) {
-                value = "";
-            }
-            
-            // Handle date objects
-            if (value instanceof Date) {
-                // Convert to DD/MM/YYYY format
-                value = Utilities.formatDate(value, Session.getScriptTimeZone(), "dd/MM/yyyy");
-            }
-            
-            // Handle numbers
-            if (typeof value === 'number') {
-                value = value.toString();
-            }
-            
-            data[mappedKey] = value;
-        }
-    });
+	const data = {};
+	headers.forEach((header, index) => {
+		const mappedKey = headerMapping[header];
+		if (mappedKey) {
+			let value = rowData[index];
 
-    // Ensure all mapped fields exist even if empty
-    Object.keys(headerMapping).forEach(header => {
-        const mappedKey = headerMapping[header];
-        if (!data.hasOwnProperty(mappedKey)) {
-            data[mappedKey] = "";
-        }
-    });
+			// Handle null/undefined values
+			if (value === null || value === undefined) {
+				value = "";
+			}
 
-    // Log the data for debugging
-    console.log("Mapped data:", data);
+			// Handle date objects
+			if (value instanceof Date) {
+				// Convert to DD/MM/YYYY format
+				value = Utilities.formatDate(
+					value,
+					Session.getScriptTimeZone(),
+					"dd/MM/yyyy",
+				);
+			}
 
-    return data;
+			// Handle numbers
+			if (typeof value === "number") {
+				value = value.toString();
+			}
+
+			data[mappedKey] = value;
+		}
+	});
+
+	// Ensure all mapped fields exist even if empty
+	Object.keys(headerMapping).forEach((header) => {
+		const mappedKey = headerMapping[header];
+		if (!data.hasOwnProperty(mappedKey)) {
+			data[mappedKey] = "";
+		}
+	});
+
+	// Log the data for debugging
+	console.log("Mapped data:", data);
+
+	return data;
 }
 
 function saveMemberChanges(formData) {
