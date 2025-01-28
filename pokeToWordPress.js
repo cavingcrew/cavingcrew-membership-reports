@@ -84,22 +84,22 @@ function pokeToWordPressProducts(data, product_id) {
 }
 
 function pokeToWooUserMeta(data, user_id) {
-    const encodedAuthInformation = Utilities.base64Encode(
-        `${apiusername}:${apipassword}`
-    );
-    const headers = { Authorization: `Basic ${encodedAuthInformation}` };
-    const options = {
-        method: "put",  // Changed from "post" to "put"
-        contentType: "application/json",
-        headers: headers,
-        payload: JSON.stringify(data),
-        muteHttpExceptions: true  // Added to get full error response
-    };
-    const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${user_id}`;
-    const response = UrlFetchApp.fetch(apiurl, options);
-    
-    // Log response for debugging
-    console.log('API Response:', response.getContentText());
-    
-    return response;
+	const encodedAuthInformation = Utilities.base64Encode(
+		`${apiusername}:${apipassword}`,
+	);
+	const headers = { Authorization: `Basic ${encodedAuthInformation}` };
+	const options = {
+		method: "put", // Changed from "post" to "put"
+		contentType: "application/json",
+		headers: headers,
+		payload: JSON.stringify(data),
+		muteHttpExceptions: true, // Added to get full error response
+	};
+	const apiurl = `https://www.${apidomain}/wp-json/wc/v3/customers/${user_id}`;
+	const response = UrlFetchApp.fetch(apiurl, options);
+
+	// Log response for debugging
+	console.log("API Response:", response.getContentText());
+
+	return response;
 }
