@@ -244,11 +244,23 @@ function saveMemberChanges(formData) {
 	// Update WordPress
 	const userMetaData = {
 		meta_data: [
-			{ key: "admin-personal-pronouns", value: formData["admin-personal-pronouns"] },
-			{ key: "admin-personal-year-of-birth", value: formData["admin-personal-year-of-birth"] },
+			{
+				key: "admin-personal-pronouns",
+				value: formData["admin-personal-pronouns"],
+			},
+			{
+				key: "admin-personal-year-of-birth",
+				value: formData["admin-personal-year-of-birth"],
+			},
 			{ key: "admin-bca-number", value: formData["admin-bca-number"] },
-			{ key: "admin-other-club-name", value: formData["admin-other-club-name"] },
-			{ key: "membership_joining_date", value: formData["membership_joining_date"] },
+			{
+				key: "admin-other-club-name",
+				value: formData["admin-other-club-name"],
+			},
+			{
+				key: "membership_joining_date",
+				value: formData["membership_joining_date"],
+			},
 			{ key: "billing_address_1", value: formData["billing_address_1"] },
 			{ key: "billing_address_2", value: formData["billing_address_2"] },
 			{ key: "billing_city", value: formData["billing_city"] },
@@ -281,7 +293,10 @@ function updateSheetRow(sheet, row, formData) {
 		["Surname", formData.last_name],
 		["Previous Name", formData.previous_name],
 		["Membership Number", formData["admin-bca-number"]],
-		["Primary Club Name", formData["admin-other-club-name"] || "The Caving Crew"],
+		[
+			"Primary Club Name",
+			formData["admin-other-club-name"] || "The Caving Crew",
+		],
 		["Joining Date", formData.membership_joining_date],
 		["Insurance Status", formData["admin-other-club-name"] ? "AN" : "C"],
 		["Fee Paid", formData["admin-other-club-name"] ? "£0" : "£20"],
