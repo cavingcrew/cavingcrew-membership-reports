@@ -1,38 +1,87 @@
 function editMemberDetails() {
-	const ui = SpreadsheetApp.getUi();
-	const sheet = SpreadsheetApp.getActiveSheet();
-	const currentRow = sheet.getActiveRange().getRowIndex();
+  const ui = SpreadsheetApp.getUi();
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const currentRow = sheet.getActiveRange().getRowIndex();
 
-	if (currentRow <= 1) {
-		ui.alert("Please select a member row");
-		return;
-	}
+  // Validate selection
+  if (!validateSelection(sheet, currentRow)) {
+    return;
+  }
 
-	// Only allow editing on BCA-CIM-Proforma sheet
-	if (sheet.getName() !== "BCA-CIM-Proforma") {
-		ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
-		return;
-	}
+  // Get user ID
+  const userId = getUserId(sheet, currentRow);
+  if (!userId) {
+    ui.alert("Could not find user ID");
+    return;
+  }
 
-	const idCol = findColumnIndex(sheet, "id");
-	const userId = sheet.getRange(currentRow, idCol).getValue();
+  // Show edit dialog
+  showEditDialog(userId, currentRow);
+}
 
-	if (!userId) {
-		ui.alert("Could not find user ID");
-		return;
-	}
+function validateSelection(sheet, row) {
+  const ui = SpreadsheetApp.getUi();
+  
+  if (row <= 1) {
+    ui.alert("Please select a member row");
+    return false;
+  }
 
-	showEditDialog(userId, currentRow);
+  if (sheet.getName() !== "BCA-CIM-Proforma") {
+    ui.alert('Please use this function from the "BCA-CIM-Proforma" sheet');
+    return false;
+  }
+
+  return true;
+}
+
+function getUserId(sheet, row) {
+  const idCol = findColumnIndex(sheet, "id");
+  return sheet.getRange(row, idCol).getValue();
 }
 
 function showEditDialog(userId, row) {
-	const html = HtmlService.createHtmlOutput(`
+  const html = HtmlService.createHtmlOutput(`
     <style>
-      .form-group { margin-bottom: 10px; }
-      label { display: block; margin-bottom: 5px; }
-      input, select { width: 100%; padding: 5px; }
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .form-group { margin-bottom: 15px; }
+      label { display: block; margin-bottom: 5px; font-weight: bold; }
+      input, select { 
+        width: 100%; 
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input:focus, select:focus {
+        outline: none;
+        border-color: #4285f4;
+      }
+      button {
+        background-color: #4285f4;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+      button:hover {
+        background-color: #357abd;
+      }
+      .error { 
+        color: red;
+        margin-top: 5px;
+        font-size: 0.9em;
+      }
+      .loading {
+        text-align: center;
+        padding: 20px;
+        display: none;
+      }
     </style>
-    <form id="memberForm">
+    <div id="loading" class="loading">Loading member data...</div>
+    <form id="memberForm" style="display: none">
       <div class="form-group">
         <label for="forenames">Forenames:</label>
         <input type="text" id="forenames" name="forenames">
@@ -95,30 +144,64 @@ function showEditDialog(userId, row) {
       </div>
       <input type="hidden" id="userId" value="${userId}">
       <input type="hidden" id="row" value="${row}">
-      <button type="submit" onclick="submitForm(); return false;">Save Changes</button>
+      <button type="submit" onclick="submitForm(); return false;">
+        <span id="submitText">Save Changes</span>
+        <span id="savingText" style="display: none">Saving...</span>
+      </button>
     </form>
+    <div id="errorMessage" class="error"></div>
     <script>
+      const form = document.getElementById('memberForm');
+      const loading = document.getElementById('loading');
+      const errorMessage = document.getElementById('errorMessage');
+      const submitText = document.getElementById('submitText');
+      const savingText = document.getElementById('savingText');
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+      }
+
+      function clearError() {
+        errorMessage.style.display = 'none';
+      }
+
       function submitForm() {
-        const form = document.getElementById('memberForm');
+        clearError();
+        submitText.style.display = 'none';
+        savingText.style.display = 'inline';
+        
         const formData = {};
         new FormData(form).forEach((value, key) => formData[key] = value);
+        
         google.script.run
-          .withSuccessHandler(() => google.script.host.close())
-          .withFailureHandler(error => alert(error))
+          .withSuccessHandler(() => {
+            google.script.host.close();
+          })
+          .withFailureHandler(error => {
+            showError(error);
+            submitText.style.display = 'inline';
+            savingText.style.display = 'none';
+          })
           .saveMemberChanges(formData);
       }
       
       // Load current values
       google.script.run
-        .withSuccessHandler(loadFormData)
+        .withSuccessHandler(data => {
+          loading.style.display = 'none';
+          form.style.display = 'block';
+          
+          Object.keys(data).forEach(key => {
+            const element = document.getElementById(key);
+            if (element) element.value = data[key];
+          });
+        })
+        .withFailureHandler(error => {
+          loading.style.display = 'none';
+          showError('Failed to load member data: ' + error);
+        })
         .getMemberData(${userId}, ${row});
-        
-      function loadFormData(data) {
-        Object.keys(data).forEach(key => {
-          const element = document.getElementById(key);
-          if (element) element.value = data[key];
-        });
-      }
     </script>
   `)
 		.setWidth(400)
