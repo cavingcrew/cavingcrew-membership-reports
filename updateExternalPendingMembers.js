@@ -1,11 +1,18 @@
 function updateExternalPendingMembers(stmt) {
-	// Define the external spreadsheet and sheet
-	const externalSpreadsheetId = "1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk";
-	const externalSheet = SpreadsheetApp.openById(
-		externalSpreadsheetId,
-	).getSheetByName("members");
+    try {
+        // Define the external spreadsheet and sheet
+        const externalSpreadsheetId = "1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk";
+        
+        let externalSheet;
+        try {
+            externalSheet = SpreadsheetApp.openById(externalSpreadsheetId).getSheetByName("members");
+        } catch (e) {
+            console.log("External spreadsheet access failed:", e.message);
+            // Silently fail - this is an optional feature
+            return;
+        }
 
-	// Clear rows 2-10
+        // Clear rows 2-10
 	externalSheet.getRange(2, 1, 9, externalSheet.getLastColumn()).clearContent();
 
 	// Run the same query as reportPendingMembers
@@ -59,4 +66,9 @@ function updateExternalPendingMembers(stmt) {
 	}
 
 	results.close();
+    } catch (error) {
+        console.log("Error in updateExternalPendingMembers:", error.message);
+        // Silently fail - this is an optional feature
+        return;
+    }
 }

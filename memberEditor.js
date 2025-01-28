@@ -104,8 +104,6 @@ function showEditDialog(userId, row) {
     </style>
     <div id="loading" class="loading">Loading member data...</div>
     <form id="memberForm" style="display: none">
-      <!-- Add debug output for userId -->
-      <div id="debug"></div>
       <div class="form-group">
         <label for="first_name">Forenames:</label>
         <input type="text" id="first_name" name="first_name">
@@ -188,9 +186,6 @@ function showEditDialog(userId, row) {
         errorMessage.style.display = 'none';
       }
 
-      // Add debug output
-      document.getElementById('debug').textContent = 'Debug: userId = ${userId}';
-      
       function submitForm() {
         clearError();
         submitText.style.display = 'none';
