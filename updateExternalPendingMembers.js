@@ -1,22 +1,26 @@
 function updateExternalPendingMembers(stmt) {
-    try {
-        // Define the external spreadsheet and sheet
-        const externalSpreadsheetId = "1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk";
-        
-        let externalSheet;
-        try {
-            externalSheet = SpreadsheetApp.openById(externalSpreadsheetId).getSheetByName("members");
-        } catch (e) {
-            console.log("External spreadsheet access failed:", e.message);
-            // Silently fail - this is an optional feature
-            return;
-        }
+	try {
+		// Define the external spreadsheet and sheet
+		const externalSpreadsheetId = "1DUEckpPQidMZDWFZ0OnJxCroLiLjh2gPgrLk";
 
-        // Clear rows 2-10
-	externalSheet.getRange(2, 1, 9, externalSheet.getLastColumn()).clearContent();
+		let externalSheet;
+		try {
+			externalSheet = SpreadsheetApp.openById(
+				externalSpreadsheetId,
+			).getSheetByName("members");
+		} catch (e) {
+			console.log("External spreadsheet access failed:", e.message);
+			// Silently fail - this is an optional feature
+			return;
+		}
 
-	// Run the same query as reportPendingMembers
-	const results = stmt.executeQuery(`
+		// Clear rows 2-10
+		externalSheet
+			.getRange(2, 1, 9, externalSheet.getLastColumn())
+			.clearContent();
+
+		// Run the same query as reportPendingMembers
+		const results = stmt.executeQuery(`
     SELECT DISTINCT
       first_name AS "Firstname*",
       last_name AS "Lastname*",
@@ -47,28 +51,28 @@ function updateExternalPendingMembers(stmt) {
     ORDER BY first_name ASC, last_name ASC
   `);
 
-	// Convert results to array, skipping the header row
-	const rows = [];
-	const metaData = results.getMetaData();
-	const numCols = metaData.getColumnCount();
+		// Convert results to array, skipping the header row
+		const rows = [];
+		const metaData = results.getMetaData();
+		const numCols = metaData.getColumnCount();
 
-	while (results.next()) {
-		const row = [];
-		for (let col = 0; col < numCols; col++) {
-			row.push(results.getString(col + 1));
+		while (results.next()) {
+			const row = [];
+			for (let col = 0; col < numCols; col++) {
+				row.push(results.getString(col + 1));
+			}
+			rows.push(row);
 		}
-		rows.push(row);
-	}
 
-	// If we have results, write them starting at row 2
-	if (rows.length > 0) {
-		externalSheet.getRange(2, 1, rows.length, numCols).setValues(rows);
-	}
+		// If we have results, write them starting at row 2
+		if (rows.length > 0) {
+			externalSheet.getRange(2, 1, rows.length, numCols).setValues(rows);
+		}
 
-	results.close();
-    } catch (error) {
-        console.log("Error in updateExternalPendingMembers:", error.message);
-        // Silently fail - this is an optional feature
-        return;
-    }
+		results.close();
+	} catch (error) {
+		console.log("Error in updateExternalPendingMembers:", error.message);
+		// Silently fail - this is an optional feature
+		return;
+	}
 }
