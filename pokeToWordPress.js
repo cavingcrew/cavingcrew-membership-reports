@@ -178,15 +178,15 @@ function pokeToWooUserMeta(data, user_id) {
 	console.log("Request Method:", "post");
 	console.log("Request Headers:", {
 		Authorization:
-			"Basic " + Utilities.base64Encode(`${apiusername}:${apipassword}`),
+			`Basic ${Utilities.base64Encode(`${apiusername}:${apipassword}`)}`,
 		"Content-Type": "application/json",
 	});
 	console.log("Request Payload:", JSON.stringify(data, null, 2));
 
 	const encodedAuthInformation = Utilities.base64Encode(
-		apiusername + ":" + apipassword,
+		`${apiusername}:${apipassword}`,
 	);
-	const headers = { Authorization: "Basic " + encodedAuthInformation };
+	const headers = { Authorization: `Basic ${encodedAuthInformation}` };
 	const options = {
 		method: "post",
 		contentType: "application/json",
