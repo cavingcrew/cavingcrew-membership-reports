@@ -120,7 +120,7 @@ function updateWooUser(userId, userData) {
 		"membership_joining_date",
 	];
 
-	metaFields.forEach((field) => {
+	for (const field of metaFields) {
 		if (userData[field] !== undefined) {
 			data.meta_data.push({
 				key: field,
@@ -135,7 +135,7 @@ function updateWooUser(userId, userData) {
 				value: user,
 			});
 		}
-	});
+	}
 
 	const encodedAuthInformation = Utilities.base64Encode(
 		`${apiusername}:${apipassword}`,
