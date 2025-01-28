@@ -217,20 +217,20 @@ function getMemberData(userId, row) {
 
 	// Create mapping for special cases
 	const headerMapping = {
-		"Forenames": "first_name",
-		"Surname": "last_name", 
+		Forenames: "first_name",
+		Surname: "last_name",
 		"Previous Name": "previous_name",
 		"Membership Number": "admin-bca-number",
 		"Primary Club Name": "admin-other-club-name",
 		"Joining Date": "membership_joining_date",
-		"Email": "user_email",
-		"Gender": "admin-personal-pronouns", 
+		Email: "user_email",
+		Gender: "admin-personal-pronouns",
 		"Year Of Birth": "admin-personal-year-of-birth",
 		"Address 1": "billing_address_1",
 		"Address 2": "billing_address_2",
-		"Town": "billing_city",
-		"County": "billing_state",
-		"Postcode": "billing_postcode"
+		Town: "billing_city",
+		County: "billing_state",
+		Postcode: "billing_postcode",
 	};
 
 	const data = {};
@@ -301,7 +301,7 @@ function updateSheetRow(sheet, row, formData) {
 	const updates = new Map();
 	Object.entries(headerMapping).forEach(([header, field]) => {
 		let value = formData[field] || "";
-		
+
 		// Handle special cases
 		if (header === "Primary Club Name" && !value) {
 			value = "The Caving Crew";
@@ -312,7 +312,7 @@ function updateSheetRow(sheet, row, formData) {
 		if (header === "Fee Paid") {
 			value = formData["admin-other-club-name"] ? "£0" : "£20";
 		}
-		
+
 		updates.set(header, value);
 	});
 
