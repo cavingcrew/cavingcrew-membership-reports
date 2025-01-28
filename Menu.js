@@ -10,6 +10,10 @@ function onOpen() {
 		.addItem("Input BirthYear", "setBirthYear")
 		.addToUi();
 
+	ui.createMenu("Member Management")
+		.addItem("Edit Member Details", "editMemberDetails")
+		.addToUi();
+
 	ui.createMenu("Refresh Matrix")
 		.addItem("Refresh All", "readData")
 		.addSeparator()
